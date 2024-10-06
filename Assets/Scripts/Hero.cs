@@ -8,8 +8,8 @@ public class Hero : MonoBehaviour
     [SerializeField] private float speed = 6f;
     [SerializeField] private int lives = 5;
     [SerializeField] private float jumpForce = 15f;
-    private bool isGrounded = false;
 
+    private bool isGrounded = false;
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private Animator anim;
