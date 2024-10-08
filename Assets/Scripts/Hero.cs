@@ -19,7 +19,11 @@ public class Hero : MonoBehaviour
         idle_hero_anim,
         run_hero_anim,
         jump_hero_anim,
-        fall_hero_anim
+        fall_hero_anim,
+        dash_hero_anim,
+        death_hero_anim,
+        getHit_hero_anim,
+        punch_hero_anim
     }
 
     private void Awake()
@@ -77,6 +81,7 @@ public class Hero : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         CheckGround();
 
         if (Input.GetAxis("Horizontal") != 0)
@@ -84,13 +89,13 @@ public class Hero : MonoBehaviour
             Flip();
         }
 
-        if (rb.velocity.y > 0.0f)
+        if (!isGrounded && rb.velocity.y > 0.0f)
         {
-            if (!isGrounded) State = States.jump_hero_anim;
+            State = States.jump_hero_anim;
         }
         else
         {
-            if (!isGrounded) State = States.fall_hero_anim;
+            State = States.fall_hero_anim;
         }
         if(isGrounded) State = States.idle_hero_anim;
 
@@ -99,6 +104,15 @@ public class Hero : MonoBehaviour
         
         if (isGrounded && Input.GetButtonDown("Jump"))
             Jump();
+
+        if (Input.GetKey(KeyCode.Z))
+            State = States.dash_hero_anim;
+        if (Input.GetKey(KeyCode.X))
+            State = States.death_hero_anim;
+        if (Input.GetKey(KeyCode.C))
+            State = States.getHit_hero_anim;
+        if (Input.GetKey(KeyCode.V))
+            State = States.punch_hero_anim;
 
     }
 }
