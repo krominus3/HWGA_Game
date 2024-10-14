@@ -350,8 +350,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 6
-  lives: 5
+  healthPoint: 5
   jumpForce: 15
+  _spriteRenderer: {fileID: 1798823813}
 --- !u!50 &438407227
 Rigidbody2D:
   serializedVersion: 4
