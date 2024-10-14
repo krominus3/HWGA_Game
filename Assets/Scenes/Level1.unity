@@ -747,7 +747,6 @@ GameObject:
   - component: {fileID: 438407229}
   - component: {fileID: 438407228}
   - component: {fileID: 438407227}
-  - component: {fileID: 438407232}
   - component: {fileID: 438407226}
   - component: {fileID: 438407231}
   - component: {fileID: 438407230}
@@ -934,19 +933,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &438407232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 438407225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5397c0ce71690c4695e8f60b74611a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  coinsCount: 0
 --- !u!1 &445043410
 GameObject:
   m_ObjectHideFlags: 0
@@ -1762,7 +1748,7 @@ GameObject:
   - component: {fileID: 871867910}
   - component: {fileID: 871867909}
   m_Layer: 5
-  m_Name: ExitButton
+  m_Name: ReturnButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
