@@ -1,39 +1,37 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Game_manager : MonoBehaviour
 {
-    private static Game_manager _instance;
+    [SerializeField] public int coinsCount = 0;
+    private static Game_manager instance;
 
     public static Game_manager Instance
     {
         get
         {
-            if (_instance == null)
+            if (instance == null)
             {
-                _instance = FindObjectOfType<Game_manager>();
-                if (_instance == null)
+                instance = FindObjectOfType<Game_manager>();
+                if (instance == null)
                 {
-                    GameObject go = new GameObject();
-                    go.name = "Game_manager";
-                    _instance = go.AddComponent<Game_manager>();
+                    GameObject go = new GameObject("Game_manager");
+                    instance = go.AddComponent<Game_manager>();
                 }
             }
-            return _instance;
+            return instance;
         }
     }
-
-    public int coinsCount = 0;
 
     private void Awake()
     {
-        if (_instance != null && _instance != this)
+        if (instance != null && instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
+            return;
         }
-        else
-        {
-            _instance = this;
-            DontDestroyOnLoad(this.gameObject);
-        }
+        DontDestroyOnLoad(gameObject);
     }
+
 }
