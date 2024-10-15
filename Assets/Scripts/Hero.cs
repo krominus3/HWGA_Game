@@ -8,11 +8,14 @@ public class Hero : MonoBehaviour
     [SerializeField] private float speed = 6f;
     [SerializeField] private int healthPoints = 3;
     [SerializeField] private float jumpForce = 15f;
+    [SerializeField] private float knockBackForce = 7f;
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
     private bool isGrounded = false;
     private Rigidbody2D rb;
     private Animator anim;
+
+    public bool getHit = false;
 
     public static Hero Instance { get; set; }
 
@@ -38,32 +41,35 @@ public class Hero : MonoBehaviour
         if (isGrounded && Input.GetButtonDown("Jump"))
             Jump();
 
-        //if (Input.GetKey(KeyCode.Z))
-        //    State = States.dash_hero_anim;
-        //if (Input.GetKey(KeyCode.X))
-        //    State = States.death_hero_anim;
-        //if (Input.GetKey(KeyCode.C))
-        //    State = States.getHit_hero_anim;
-        //if (Input.GetKey(KeyCode.V))
-        //    State = States.punch_hero_anim;
-
     }
 
-    public void GetDamage(int count)
+    public void GetDamage(int DamageCount, Transform damagePosition)
     {
-        healthPoints -= count;
+        //Damage player
+        healthPoints -= DamageCount;
+        getHit = true;
         Debug.Log(healthPoints);
+
+        //Knockback
+        Vector3 direction = (transform.position - damagePosition.position).normalized;
+        direction.y ++;
+        rb.AddForce(direction * knockBackForce, ForceMode2D.Impulse);
     }
 
     private void States()
     {
         anim.SetFloat("moveX", Mathf.Abs(Input.GetAxisRaw("Horizontal")));
         anim.SetFloat("moveY", rb.velocity.y);
+        anim.SetBool("getHit", getHit);
+
         if (healthPoints <= 0)
             anim.SetBool("dying", true);
 
         if (isGrounded)
+        {
+            //getHit = false;
             anim.SetBool("jumping", false);
+        }
         else
             anim.SetBool("jumping", true);
     }
