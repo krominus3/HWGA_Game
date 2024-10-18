@@ -7,13 +7,19 @@ public class Hero : MonoBehaviour
 {
     [SerializeField] private float speed = 6f;
     [SerializeField] private int healthPoints = 3;
-    [SerializeField] private float jumpForce = 15f;
-    [SerializeField] private float knockBackForce = 7f;
+    [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private float knockBackForceX = 10f;
+    [SerializeField] private float knockBackForceY = 10f;
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
-    private bool isGrounded = false;
     private Rigidbody2D rb;
     private Animator anim;
+
+    private float coyoteTime = 0.2f;
+    private float coyoteTimeCounter;
+    private float jumpBufferTime = 0.2f;
+    private float jumpBufferCounter;
+    private float horizontal;
 
     public bool getHit = false;
 
@@ -29,17 +35,18 @@ public class Hero : MonoBehaviour
         else
             Destroy(gameObject);
     }
+
     void Update()
     {
-        States();
-        CheckGround();
-        Flip();
-
-        if (Input.GetButton("Horizontal")) 
-            Run();
-        
-        if (isGrounded && Input.GetButtonDown("Jump"))
+        if (!getHit)
+        {
             Jump();
+            Run();
+            Flip();
+        }
+        States();
+        coyoteTimeCheker();
+        jumpBufferCheker();
 
     }
 
@@ -51,9 +58,29 @@ public class Hero : MonoBehaviour
         Debug.Log(healthPoints);
 
         //Knockback
-        Vector3 direction = (transform.position - damagePosition.position).normalized;
-        direction.y ++;
-        rb.AddForce(direction * knockBackForce, ForceMode2D.Impulse);
+        Vector2 direction = (transform.position - damagePosition.position).normalized;
+        rb.velocity = new Vector2(direction.x * knockBackForceX, knockBackForceY);
+
+    }
+
+    private void coyoteTimeCheker()
+    {
+        if (isGrounded())
+            coyoteTimeCounter = coyoteTime;
+        else
+            coyoteTimeCounter -= Time.deltaTime;
+    }
+
+    private void jumpBufferCheker()
+    {
+        if (Input.GetButtonDown("Jump"))
+        {
+            jumpBufferCounter = jumpBufferTime;
+        }
+        else
+        {
+            jumpBufferCounter -= Time.deltaTime;
+        }
     }
 
     private void States()
@@ -65,7 +92,7 @@ public class Hero : MonoBehaviour
         if (healthPoints <= 0)
             anim.SetBool("dying", true);
 
-        if (isGrounded)
+        if (isGrounded())
         {
             //getHit = false;
             anim.SetBool("jumping", false);
@@ -84,20 +111,33 @@ public class Hero : MonoBehaviour
 
     private void Run()
     {
-
-        Vector3 dir = transform.right * Input.GetAxisRaw("Horizontal");
-        transform.position = Vector3.MoveTowards(transform.position, transform.position + dir, speed * Time.deltaTime);
+        horizontal = Input.GetAxisRaw("Horizontal");
+        rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
     }
+
 
     private void Jump()
     {
-        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+
+            jumpBufferCounter = 0f;
+        }
+
+        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+
+            coyoteTimeCounter = 0f;
+        }
     }
 
-    private void CheckGround()
+    private bool isGrounded()
     {
         Collider2D[] collider = Physics2D.OverlapCircleAll(transform.position, 0.3f);
-        isGrounded = collider.Length > 1;
-    }    
+        return collider.Length > 1;
+    }
+    
 
 }
