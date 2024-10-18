@@ -12,17 +12,12 @@ public class CameraController : MonoBehaviour
         if (!player)
             player = FindObjectOfType<Hero>().transform;
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
     void Update()
     {
         pos = player.position;
         pos.z = -10f;
+        pos.y = player.position.y + 2;
         transform.position = Vector3.Lerp(transform.position, pos, Time.deltaTime);
     }
 }
