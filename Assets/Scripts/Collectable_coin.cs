@@ -1,17 +1,21 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Collectable_coin : MonoBehaviour
 {
+    private Game_manager game_Manager;
+
+    private void Start()
+    {
+        game_Manager = Game_manager.Instance; // Получаем ссылку на Game_manager
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Debug.Log(collision.name);
-        Game_manager player = collision.gameObject.GetComponent<Game_manager>();
-        if (player)
+        if (collision.name == "Hero")
         {
-            player.coinsCount++;
+            game_Manager.coinsCount++;
             Destroy(this.gameObject);
         }
     }
