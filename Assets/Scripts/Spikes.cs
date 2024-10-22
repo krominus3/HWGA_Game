@@ -16,7 +16,7 @@ public class Spikes : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if ((collision.gameObject == Hero.Instance.gameObject) && (!Hero.Instance.getHit))
+        if ((collision.gameObject == Hero.Instance.gameObject) && (!Hero.Instance.getHit) && (!Hero.Instance.isInvulnerability))
         {
             Hero.Instance.GetDamage(damage, bc.transform);
             Debug.Log("touch");
@@ -25,7 +25,7 @@ public class Spikes : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject == Hero.Instance.gameObject)
+        if ((collision.gameObject == Hero.Instance.gameObject) && (!Hero.Instance.isInvulnerability))
             anim.SetTrigger("active");
     }
 }
