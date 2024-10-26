@@ -7,7 +7,7 @@ public class Hero : MonoBehaviour
 {
     [SerializeField] private float speed = 6f;
     [SerializeField] private int healthPoints = 3;
-    [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private float jumpForce = 15f;
 
     [SerializeField] private float knockBackForceX = 10f;
     [SerializeField] private float knockBackForceY = 10f;
@@ -27,7 +27,7 @@ public class Hero : MonoBehaviour
     private float horizontal;
     private bool isFacingRight = true;
 
-    private float coyoteTime = 0.2f;
+    private float coyoteTime = 0.15f;
     private float coyoteTimeCounter;
     private float jumpBufferTime = 0.2f;
     private float jumpBufferCounter;
@@ -57,16 +57,16 @@ public class Hero : MonoBehaviour
     {
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
-        {
-            StartCoroutine(Dash());
-        }
-
         States();
 
         if (getHit || isDashing || isDeath)
         {
             return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+        {
+            StartCoroutine(Dash());
         }
 
         Jump();
@@ -103,7 +103,9 @@ public class Hero : MonoBehaviour
             anim.SetBool("jumping", false);
         }
         else
+        {
             anim.SetBool("jumping", true);
+        }
     }
 
     public void GetDamage(int DamageCount, Transform damagePosition)
