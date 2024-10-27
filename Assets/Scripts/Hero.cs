@@ -96,16 +96,8 @@ public class Hero : MonoBehaviour
 
         if (healthPoints <= 0)
             anim.SetBool("dying", true);
+        anim.SetBool("jumping", !isGrounded());
 
-        if (isGrounded())
-        {
-            //getHit = false;
-            anim.SetBool("jumping", false);
-        }
-        else
-        {
-            anim.SetBool("jumping", true);
-        }
     }
 
     public void GetDamage(int DamageCount, Transform damagePosition)
@@ -220,7 +212,11 @@ public class Hero : MonoBehaviour
     private bool isGrounded()
     {
         Collider2D[] collider = Physics2D.OverlapCircleAll(transform.position, 0.3f);
-        return collider.Length > 1;
+
+        if (Input.GetButton("Jump") && rb.velocity.y > 0f)
+            return false;
+        else
+            return collider.Length > 1;
     }
     
 

@@ -12,10 +12,13 @@ public class Boss_room : MonoBehaviour
     private Animator anim1;
     private Animator anim2;
 
+    private BoxCollider2D bc;
+
     void Start()
     {
         anim1 = door1.GetComponentInChildren<Animator>();
         anim2 = door2.GetComponentInChildren<Animator>();
+        bc = GetComponent<BoxCollider2D>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -24,6 +27,7 @@ public class Boss_room : MonoBehaviour
         {
             anim1.SetTrigger("close");
             anim2.SetTrigger("close");
+            bc.enabled = false;
         }
 
     }
