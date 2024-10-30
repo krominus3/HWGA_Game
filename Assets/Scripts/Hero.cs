@@ -211,12 +211,24 @@ public class Hero : MonoBehaviour
 
     private bool isGrounded()
     {
-        Collider2D[] collider = Physics2D.OverlapCircleAll(transform.position, 0.3f);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.3f);
 
+        //if (Input.GetButton("Jump") && rb.velocity.y > 0f)
+        //    return false;
+        //else
+        //    return collider.Length > 1;
         if (Input.GetButton("Jump") && rb.velocity.y > 0f)
             return false;
         else
-            return collider.Length > 1;
+            foreach (Collider2D collider in colliders)
+                {
+                    if (collider.CompareTag("Ground"))
+                    {
+                        return true;
+                    }
+                }
+        return false;
+
     }
     
 
