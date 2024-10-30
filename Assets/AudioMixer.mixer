@@ -58,6 +58,8 @@ AudioMixerController:
     name: 1level
   - guid: 6d8179bcc74104442be2cf834752cc9c
     name: MainMenuMusic
+  - guid: c034f2f409e898e449fa28373c4f0344
+    name: MainSound
   m_AudioMixerGroupViews:
   - guids:
     - 5f154a1cd47912a4daed9b4d7ddde1c3
