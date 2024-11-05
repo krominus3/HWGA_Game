@@ -23,6 +23,10 @@ public class Game_manager : MonoBehaviour
             return instance;
         }
     }
+    public int GetCoinsCount()
+    {
+        return coinsCount;
+    }
 
     private void Awake()
     {
