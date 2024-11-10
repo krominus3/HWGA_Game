@@ -38,6 +38,7 @@ public class Hero : MonoBehaviour
     public bool getHit = false;
     public bool isInvulnerability = false;
     private bool isDeath = false;
+    private bool onGround = true;
 
     public static Hero Instance { get; set; }
 
@@ -55,6 +56,7 @@ public class Hero : MonoBehaviour
 
     void Update()
     {
+        onGround = isGrounded();
         horizontal = Input.GetAxisRaw("Horizontal");
 
         States();
@@ -93,10 +95,10 @@ public class Hero : MonoBehaviour
         anim.SetFloat("moveY", rb.velocity.y);
         anim.SetBool("getHit", getHit);
         anim.SetBool("isDashing", isDashing);
+        anim.SetBool("jumping", !onGround);
 
         if (healthPoints <= 0)
             anim.SetBool("dying", true);
-        anim.SetBool("jumping", !isGrounded());
 
     }
 
@@ -162,7 +164,7 @@ public class Hero : MonoBehaviour
 
     private void coyoteTimeCheker()
     {
-        if (isGrounded())
+        if (onGround)
             coyoteTimeCounter = coyoteTime;
         else
             coyoteTimeCounter -= Time.deltaTime;
