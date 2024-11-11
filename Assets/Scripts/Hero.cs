@@ -18,7 +18,7 @@ public class Hero : MonoBehaviour
     [SerializeField] private float dashingTime = 0.2f;
     [SerializeField] private float dashingCooldown = 1f;
 
-    [SerializeField] SpriteRenderer sr;
+    [SerializeField] private SpriteRenderer sr;
 
     private Rigidbody2D rb;
     private Animator anim;
@@ -172,7 +172,7 @@ public class Hero : MonoBehaviour
 
     private void jumpBufferCheker()
     {
-        if (Input.GetButtonDown("Jump"))
+        if ((Input.GetAxisRaw("Jump") > 0 && Input.GetButtonDown("Jump")) || Input.GetKeyDown(KeyCode.Space))
         {
             jumpBufferCounter = jumpBufferTime;
         }
@@ -196,6 +196,7 @@ public class Hero : MonoBehaviour
 
     private void Jump()
     {
+
         if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
@@ -203,11 +204,23 @@ public class Hero : MonoBehaviour
             jumpBufferCounter = 0f;
         }
 
-        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
+        if (((Input.GetAxisRaw("Jump") == 0 && Input.GetButtonUp("Jump")) || Input.GetKeyUp(KeyCode.Space)) && rb.velocity.y > 0f)
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
 
             coyoteTimeCounter = 0f;
+        }
+
+        if (Input.GetAxisRaw("Jump") < 0)
+        {
+            StartCoroutine(IgnoreLayerOff());
+        }
+
+        IEnumerator IgnoreLayerOff()
+        {
+            Physics2D.IgnoreLayerCollision(6, 8, true);
+            yield return new WaitForSeconds(0.3f);
+            Physics2D.IgnoreLayerCollision(6, 8, false);
         }
     }
 
@@ -219,7 +232,7 @@ public class Hero : MonoBehaviour
         //    return false;
         //else
         //    return collider.Length > 1;
-        if (Input.GetButton("Jump") && rb.velocity.y > 0f)
+        if ((Input.GetButton("Jump") || Input.GetKey(KeyCode.Space)) && rb.velocity.y > 0f)
             return false;
         else
             foreach (Collider2D collider in colliders)
