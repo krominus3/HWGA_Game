@@ -16,6 +16,7 @@ public class Collectable_coin : MonoBehaviour
         game_Manager = Game_manager.Instance; // Получаем ссылку на Game_manager
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();    
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

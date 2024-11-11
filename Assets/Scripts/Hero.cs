@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 public class Hero : MonoBehaviour
 {
     [SerializeField] private float speed = 6f;
-    [SerializeField] private int healthPoints = 3;
+    [SerializeField] public int healthPoints = 3;
     [SerializeField] private float jumpForce = 15f;
 
     [SerializeField] private float knockBackForceX = 10f;
