@@ -8,7 +8,7 @@ public class Collectable_coin : MonoBehaviour
 
     private void Start()
     {
-        game_Manager = Game_manager.Instance; // Получаем ссылку на Game_manager
+        game_Manager = Game_manager.Instance; 
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
