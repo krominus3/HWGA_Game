@@ -99,6 +99,8 @@ public class Hero : MonoBehaviour
 
         if (healthPoints <= 0)
             anim.SetBool("dying", true);
+        else 
+            anim.SetBool("dying", false);
 
     }
 
