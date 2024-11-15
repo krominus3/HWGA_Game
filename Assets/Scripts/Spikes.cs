@@ -8,6 +8,7 @@ public class Spikes : MonoBehaviour
 
     private Animator anim;
     private BoxCollider2D bc;
+
     private void Awake()
     {
         bc = GetComponent<BoxCollider2D>();
@@ -28,4 +29,6 @@ public class Spikes : MonoBehaviour
         if ((collision.gameObject == Hero.Instance.gameObject) && (!Hero.Instance.isInvulnerability))
             anim.SetTrigger("active");
     }
+
+
 }

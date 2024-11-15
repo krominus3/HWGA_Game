@@ -12,9 +12,15 @@ public class Boss_room : MonoBehaviour
 
     private BoxCollider2D bc;
 
+    public static Boss_room Instance { get; set; }
+
     void Start()
     {
         bc = GetComponent<BoxCollider2D>();
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -27,5 +33,12 @@ public class Boss_room : MonoBehaviour
             bossRB.simulated = true;
         }
 
+    }
+
+    
+    public void OpenDoors()
+    {
+        doorAnim1.SetTrigger("open");
+        doorAnim2.SetTrigger("open");
     }
 }

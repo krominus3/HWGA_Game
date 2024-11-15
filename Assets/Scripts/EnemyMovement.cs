@@ -37,18 +37,7 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (stopChasing)
-        //    return;
-        //if (!isChasing)
-        //{
-        //    CheckChasing();
-
-        //    if (!doNothing)
-        //        DoPatrol();
-        //}else
-        //{
-        //    DoChasing();
-        //}
+        
         if (doNothing) return;
 
         CheckChasing();
@@ -112,19 +101,6 @@ public class Enemy : MonoBehaviour
         }
 
 
-        ////if (Vector2.Distance(transform.position, currentPoint.position) < 0.5f && currentPoint == patrolRight)
-        //if (transform.position.x > currentPoint.position.x && currentPoint == patrolRight)
-        //{
-        //    rb.velocity = Vector2.zero;
-        //    currentPoint = patrolLeft;
-        //}
-
-        ////if (Vector2.Distance(transform.position, currentPoint.position) < 0.5f && currentPoint == patrolLeft)
-        //if (transform.position.x < currentPoint.position.x && currentPoint == patrolLeft)
-        //{
-        //    rb.velocity = Vector2.zero;
-        //    currentPoint = patrolRight;
-        //}
 
         if (Vector2.Distance(transform.position, currentPoint.position) < 0.5f)
         {
@@ -163,23 +139,23 @@ public class Enemy : MonoBehaviour
         doNothing = false;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(patrolLeft.position, 0.3f);
-        Gizmos.DrawWireSphere(patrolRight.position, 0.3f);
-        //Gizmos.DrawLine(patrolLeft.position, patrolRight.position);
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.DrawWireSphere(patrolLeft.position, 0.3f);
+    //    Gizmos.DrawWireSphere(patrolRight.position, 0.3f);
+    //    //Gizmos.DrawLine(patrolLeft.position, patrolRight.position);
 
-        Gizmos.DrawWireCube(chaseLeft.position, new Vector2(0.5f, 0.5f));
-        Gizmos.DrawWireCube(chaseRight.position, new Vector2(0.5f, 0.5f));
-        //Gizmos.DrawLine(chaseLeft.position, chaseRight.position);
+    //    Gizmos.DrawWireCube(chaseLeft.position, new Vector2(0.5f, 0.5f));
+    //    Gizmos.DrawWireCube(chaseRight.position, new Vector2(0.5f, 0.5f));
+    //    //Gizmos.DrawLine(chaseLeft.position, chaseRight.position);
 
-        Gizmos.DrawLine(chaseLeft.position, transform.position);
-        Gizmos.DrawLine(chaseRight.position, transform.position);
-        Gizmos.DrawLine(patrolLeft.position, transform.position);
-        Gizmos.DrawLine(patrolRight.position, transform.position);
+    //    Gizmos.DrawLine(chaseLeft.position, transform.position);
+    //    Gizmos.DrawLine(chaseRight.position, transform.position);
+    //    Gizmos.DrawLine(patrolLeft.position, transform.position);
+    //    Gizmos.DrawLine(patrolRight.position, transform.position);
 
-        Gizmos.DrawWireSphere(transform.position, 5f);
-        Gizmos.DrawWireSphere(transform.position, 6f);
-    }
+    //    Gizmos.DrawWireSphere(transform.position, 5f);
+    //    Gizmos.DrawWireSphere(transform.position, 6f);
+    //}
 
 }

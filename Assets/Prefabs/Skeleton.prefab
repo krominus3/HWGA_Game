@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 1149116588709508776}
   - component: {fileID: 5778792387353629146}
   - component: {fileID: 775764405014797019}
+  - component: {fileID: 1184610540358782375}
   m_Layer: 0
   m_Name: SkeletonEnemy
   m_TagString: Untagged
@@ -145,8 +146,22 @@ MonoBehaviour:
   chaseLeft: {fileID: 4784857528491836171}
   chaseRight: {fileID: 7260650823728877756}
   agroRange: 5
+  chaseRange: 6
   speedMovementChase: 4
   speedMovementPatrol: 2
+--- !u!114 &1184610540358782375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2473330111786658743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe02095d1a4ec4243b66b62251199a89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1
 --- !u!1 &2641755067861896700
 GameObject:
   m_ObjectHideFlags: 0

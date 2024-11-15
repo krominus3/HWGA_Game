@@ -7,6 +7,16 @@ public class Game_manager : MonoBehaviour
     [SerializeField] public int coinsCount = 0;
     private static Game_manager instance;
 
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        DontDestroyOnLoad(gameObject);
+    }
+
     public static Game_manager Instance
     {
         get
@@ -23,19 +33,12 @@ public class Game_manager : MonoBehaviour
             return instance;
         }
     }
+
     public int GetCoinsCount()
     {
         return coinsCount;
     }
 
-    private void Awake()
-    {
-        if (instance != null && instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        DontDestroyOnLoad(gameObject);
-    }
+
 
 }

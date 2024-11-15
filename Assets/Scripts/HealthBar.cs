@@ -3,15 +3,11 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    public Hero hero; 
     public Image[] hearts; 
 
     private void Start()
     {
-        if (hero == null)
-        {
-            hero = Hero.Instance; 
-        }
+
 
         if (hearts.Length == 0)
         {
@@ -26,7 +22,7 @@ public class HealthBar : MonoBehaviour
 
     private void UpdateHealthDisplay()
     {
-        int currentHealth = hero.healthPoints;
+        int currentHealth = Hero.Instance.healthPoints;
 
         for (int i = 0; i < hearts.Length; i++)
         {
