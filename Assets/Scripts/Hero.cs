@@ -37,7 +37,7 @@ public class Hero : MonoBehaviour
 
     public bool getHit = false;
     public bool isInvulnerability = false;
-    private bool isDeath = false;
+    public bool isDeath = false;
     private bool onGround = true;
 
     public static Hero Instance { get; set; }

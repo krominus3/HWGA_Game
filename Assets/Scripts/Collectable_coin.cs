@@ -12,7 +12,9 @@ public class Collectable_coin : MonoBehaviour
     private SpriteRenderer sr;
     private Animator anim;
 
+
     private bool pikedUp = false;
+
 
     private void Start()
     {
@@ -32,7 +34,8 @@ public class Collectable_coin : MonoBehaviour
             anim.SetTrigger("pickUp");
             rb.gravityScale = 1;
             rb.velocity = new Vector2(1, 2);
-            
+            //временная мера
+            TimeManager.Instance.AddTime(5);
             //в аниматоре вызывается уничтожение после анмации подбора
 
         }

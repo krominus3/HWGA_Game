@@ -56,6 +56,7 @@ public class BossMovement : MonoBehaviour
         {
             Boss_room.Instance.OpenDoors();
             Game_manager.Instance.coinsCount += 5;
+            TimeManager.Instance.AddTime(20);
             isDeath = true;
             Destroy(this.gameObject);
         }
