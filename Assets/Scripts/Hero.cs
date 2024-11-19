@@ -91,7 +91,7 @@ public class Hero : MonoBehaviour
 
     private void States()
     {
-        anim.SetFloat("moveX", Mathf.Abs(Input.GetAxisRaw("Horizontal")));
+        anim.SetFloat("moveX", Mathf.Abs(horizontal));
         anim.SetFloat("moveY", rb.velocity.y);
         anim.SetBool("getHit", getHit);
         anim.SetBool("isDashing", isDashing);

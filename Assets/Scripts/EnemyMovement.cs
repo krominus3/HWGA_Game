@@ -1,59 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
-public class Enemy : MonoBehaviour
+public class EnemyMovement : MonoBehaviour
 {
-    [SerializeField] private Transform patrolLeft; //pointA
-    [SerializeField] private Transform patrolRight; //PointB
+    [SerializeField] private Transform patrolLeft;
+    [SerializeField] private Transform patrolRight;
     [SerializeField] private Transform chaseLeft;
     [SerializeField] private Transform chaseRight;
 
-    [SerializeField] float agroRange = 5;
-    [SerializeField] float chaseRange = 6;
-    [SerializeField] private float speedMovementChase = 4f;
-    [SerializeField] private float speedMovementPatrol = 2f;
 
-    private Rigidbody2D rb;
-    //private Animator anim;
+    [SerializeField] float agroRange = 5;
+    [SerializeField] protected float chaseRange = 6;
+    [SerializeField] private float speedMovementPatrol = 2f;
+    [SerializeField] protected float speedMovementChase = 4f;
+
+    protected Rigidbody2D rb;
+    protected Animator anim;
     private Transform currentPoint;
 
-    private bool doNothing = false;
-    private bool isChasing = false;
-    private bool stopChasing = true;
+    protected bool doNothing = false;
+    protected bool isChasing = false;
+    protected bool stopChasing = true;
+    private bool isFacingRight = true;
 
-    private Transform player;
+    protected Transform player;
 
 
-    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        //anim
+        anim = GetComponent<Animator>();
         currentPoint = patrolRight;
         player = Hero.Instance.transform;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    //void Update()
+    //{
         
-        if (doNothing) return;
+    //    Flip();
+        
+    //    if (doNothing) return;
 
-        CheckChasing();
-        if (isChasing && !stopChasing)
-        {
-            DoChasing();
-            return;
-        }
-        if (!isChasing)
-        {
-            DoPatrol();
-        }
+    //    CheckChasing();
 
-    }
+    //    if (isChasing && !stopChasing)
+    //    {
+    //        DoChasing();
+    //        return;
+    //    }
+    //    if (!isChasing)
+    //    {
+    //        DoPatrol();
+    //    }
 
-    private void CheckChasing()
+    //}
+    protected void CheckChasing()
     {
         if (Vector2.Distance(transform.position, chaseRight.position) < 0.5f || Vector2.Distance(transform.position, chaseLeft.position) < 0.5f)
         {
@@ -72,13 +75,14 @@ public class Enemy : MonoBehaviour
         if (distToPlayer < agroRange)
         {
             isChasing = true;
-        }else if (distToPlayer > chaseRange)
+        }
+        else if (distToPlayer > chaseRange)
         {
             isChasing = false;
         }
     }
 
-    private void DoPatrol()
+    protected void DoPatrol()
     {
         if (currentPoint == patrolRight)
         {
@@ -100,62 +104,51 @@ public class Enemy : MonoBehaviour
             }
         }
 
-
-
         if (Vector2.Distance(transform.position, currentPoint.position) < 0.5f)
         {
             StartCoroutine(NothingLoop());
         }
     }
 
-    private void DoChasing()
-    {
-        
-        float distToPlayer = Vector2.Distance(transform.position, player.position);
 
-        if (distToPlayer < chaseRange)
+    protected void Flip()
+    {
+        float horizontal = rb.velocity.x;
+
+        if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
         {
-            if (transform.position.x < player.position.x)
-            {
-                rb.velocity = new Vector2(speedMovementChase, 0);
-            }
-            else if (transform.position.x > player.position.x)
-            {
-                rb.velocity = new Vector2(-speedMovementChase, 0);
-            }
-        }
-        else
-        {
-            StartCoroutine(NothingLoop());
-            isChasing = false;
-            rb.velocity = Vector2.zero;
+            Vector2 localScale = transform.localScale;
+            isFacingRight = !isFacingRight;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
         }
     }
 
-    private IEnumerator NothingLoop()
+    protected IEnumerator NothingLoop()
     {
         doNothing = true;
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         doNothing = false;
     }
 
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.DrawWireSphere(patrolLeft.position, 0.3f);
-    //    Gizmos.DrawWireSphere(patrolRight.position, 0.3f);
-    //    //Gizmos.DrawLine(patrolLeft.position, patrolRight.position);
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(patrolLeft.position, 0.3f);
+        Gizmos.DrawWireSphere(patrolRight.position, 0.3f);
+        //Gizmos.DrawLine(patrolLeft.position, patrolRight.position);
 
-    //    Gizmos.DrawWireCube(chaseLeft.position, new Vector2(0.5f, 0.5f));
-    //    Gizmos.DrawWireCube(chaseRight.position, new Vector2(0.5f, 0.5f));
-    //    //Gizmos.DrawLine(chaseLeft.position, chaseRight.position);
+        Gizmos.DrawWireCube(chaseLeft.position, new Vector2(0.5f, 0.5f));
+        Gizmos.DrawWireCube(chaseRight.position, new Vector2(0.5f, 0.5f));
+        //Gizmos.DrawLine(chaseLeft.position, chaseRight.position);
 
-    //    Gizmos.DrawLine(chaseLeft.position, transform.position);
-    //    Gizmos.DrawLine(chaseRight.position, transform.position);
-    //    Gizmos.DrawLine(patrolLeft.position, transform.position);
-    //    Gizmos.DrawLine(patrolRight.position, transform.position);
+        Gizmos.DrawLine(chaseLeft.position, transform.position);
+        Gizmos.DrawLine(chaseRight.position, transform.position);
+        Gizmos.DrawLine(patrolLeft.position, transform.position);
+        Gizmos.DrawLine(patrolRight.position, transform.position);
 
-    //    Gizmos.DrawWireSphere(transform.position, 5f);
-    //    Gizmos.DrawWireSphere(transform.position, 6f);
-    //}
+        Gizmos.DrawWireSphere(transform.position, 5f);
+        Gizmos.DrawWireSphere(transform.position, 6f);
+        Gizmos.DrawWireSphere(transform.position, 1.5f);
+    }
 
 }

@@ -30,6 +30,7 @@ public class TimeManager : MonoBehaviour
         {
             timer.text = "Время вышло!";
             Hero.Instance.isDeath = true;
+            Hero.Instance.healthPoints = 0;
             return;
         }
 
