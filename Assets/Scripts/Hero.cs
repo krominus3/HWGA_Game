@@ -37,7 +37,7 @@ public class Hero : MonoBehaviour
 
     public bool getHit = false;
     public bool isInvulnerability = false;
-    public bool isDeath = false;
+    public bool isDead = false;
     private bool onGround = true;
 
     public static Hero Instance { get; set; }
@@ -61,7 +61,7 @@ public class Hero : MonoBehaviour
 
         States();
 
-        if (getHit || isDashing || isDeath)
+        if (getHit || isDashing || isDead)
         {
             return;
         }
@@ -82,7 +82,7 @@ public class Hero : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (getHit || isDashing || isDeath)
+        if (getHit || isDashing || isDead)
         {
             return;
         }
@@ -116,7 +116,7 @@ public class Hero : MonoBehaviour
         }
         else
         {
-            isDeath = true;
+            isDead = true;
         }
     }
 

@@ -1,95 +1,248 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class SkeletonScript : EnemyMovement
+public class EnemyStateMachine : MonoBehaviour
 {
+    [SerializeField] private Transform patrolLeft;
+    [SerializeField] private Transform patrolRight;
+    [SerializeField] private Transform chaseLeft;
+    [SerializeField] private Transform chaseRight;
 
-    [SerializeField] protected float atackRange = 1.5f;
+    [SerializeField] private float agroRange = 5f;
+    [SerializeField] private float chaseRange = 6f;
+    [SerializeField] private float attackRange = 1.5f;
+    [SerializeField] private float speedMovementPatrol = 2f;
+    [SerializeField] private float speedMovementChase = 4f;
+    [SerializeField] private int maxHealth = 3;
+    private Animator animator;
 
-    [SerializeField] int HP = 3;
+    private enum EnemyState { Patrolling, Chasing, Attacking, Returning, TakingDamage, Dead }
+    private EnemyState currentState = EnemyState.Patrolling;
 
-    void Update()
+    private Transform player;
+    private int currentHealth;
+    private Vector3 initialPosition;
+    //private bool isPlayerInRange;
+    private Transform currentTarget; // Текущая точка патрулирования
+    private Vector3 pos, velocity;
+
+    private bool isAttacking = false; // Флаг, который будет указывать, что враг атакует
+
+    private void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        animator = GetComponent<Animator>();
+        currentHealth = maxHealth;
+        initialPosition = transform.position;
+        currentTarget = patrolRight; // Начинаем патрулирование от левой к правой точке
+        pos = transform.position;
+    }
 
-        Flip();
-        States();
+    private void Update()
+    {
+        velocity = (transform.position - pos) / Time.deltaTime;
+        pos = transform.position;
 
-        if (doNothing) return;
+        animator.SetBool("walking", Mathf.Abs(velocity.x) > 0 ? true : false);
 
-        CheckChasing();
+        if (isAttacking) return; // Если враг атакует, игнорируем другие действия
 
-        if (CheckAtackRange())
+        switch (currentState)
         {
-            DoAtack();
+            case EnemyState.Patrolling:
+                Patrol();
+                CheckForPlayer();
+                break;
+
+            case EnemyState.Chasing:
+                Chase();
+                CheckAttackRange();
+                break;
+
+            case EnemyState.Attacking:
+                Attack();
+                break;
+
+            case EnemyState.Returning:
+                ReturnToPatrol();
+                break;
+
+            case EnemyState.TakingDamage:
+                // Вызов анимации и переход в другое состояние через корутину
+                break;
+
+            case EnemyState.Dead:
+                // Логика смерти
+                break;
         }
-        else if (isChasing && !stopChasing)
+    }
+
+    private void Patrol()
+    {
+        // Проверка на игрока в зоне агрессии
+        if (Vector3.Distance(transform.position, player.position) < agroRange && !Hero.Instance.isDead)
         {
-            DoChasing();
+            currentState = EnemyState.Chasing;
+            return; // Прекращаем патрулирование, если начали преследовать игрока
         }
-        else if (!isChasing)
+
+        // Двигаемся к текущей точке
+        MoveTowards(currentTarget.position, speedMovementPatrol);
+
+        // Если враг достиг текущей цели, переключаем точку
+        if (Vector3.Distance(transform.position, currentTarget.position) < 0.1f)
         {
-            DoPatrol();
+            currentTarget = currentTarget == patrolLeft ? patrolRight : patrolLeft;
+        }
+    }
+
+    private void CheckForPlayer()
+    {
+        // Если игрок мертв, не проверяем его
+        if (Hero.Instance.isDead) return;
+
+        if (player != null && Vector3.Distance(transform.position, player.position) < agroRange)
+        {
+            currentState = EnemyState.Chasing;
+        }
+    }
+
+    private void Chase()
+    {
+        if (Hero.Instance.isDead) return;
+
+        Vector3 target = player.position;
+
+        // Ограничиваем движение врага только по оси X в пределах области погони
+        target = new Vector3(Mathf.Clamp(target.x, chaseLeft.position.x, chaseRight.position.x), transform.position.y, transform.position.z);
+
+        MoveTowards(target, speedMovementChase);
+
+        // Если игрок вышел за пределы chaseRange, враг возвращается к патрулю
+        if (Vector3.Distance(transform.position, player.position) > chaseRange)
+        {
+            currentState = EnemyState.Returning;
+        }
+    }
+
+    private void CheckAttackRange()
+    {
+        if (player != null && Vector3.Distance(transform.position, player.position) < attackRange)
+        {
+            currentState = EnemyState.Attacking;
+        }
+    }
+
+    private void Attack()
+    {
+        isAttacking = true; // Враг начал атаку
+
+        animator.SetTrigger("attack"); // Запуск анимации атаки
+
+        // Враг наносит урон, если игрок входит в зону атаки (в Trigger)
+        // Мы делаем это через OnTriggerEnter2D, чтобы урон был нанесен, как только игрок попадет в коллайдер атаки
+        StartCoroutine(EndAttack()); // Завершаем атаку после задержки
+    }
+
+    private IEnumerator EndAttack()
+    {
+        yield return new WaitForSeconds(1f); // Задержка на продолжительность анимации атаки
+
+
+        if (Vector3.Distance(transform.position, player.position) < chaseRange && !Hero.Instance.isDead)
+        {
+            currentState = EnemyState.Chasing; // Если игрок в пределах зоны преследования, продолжаем его преследовать
+        }
+        else
+        {
+            currentState = EnemyState.Patrolling; // Если игрок слишком далеко, возвращаемся к патрулированию
         }
 
+        isAttacking = false; // Завершаем атаку, враг теперь может двигаться
     }
 
-    private void States()
+    private void ReturnToPatrol()
     {
-        anim.SetFloat("|velocity.x|", Mathf.Abs(rb.velocity.x));
-        anim.SetInteger("health", HP);
+        MoveTowards(initialPosition, speedMovementPatrol);
+
+        // Если игрок в зоне агрессии, начинаем преследование
+        if (Vector3.Distance(transform.position, player.position) < agroRange)
+        {
+            currentState = EnemyState.Chasing;
+            return; // Прекращаем возвращение, если начинаем преследовать
+        }
+
+        // Если враг вернулся на начальную точку, начинаем патрулирование
+        if (Vector3.Distance(transform.position, initialPosition) < 0.1f)
+        {
+            currentState = EnemyState.Patrolling;
+        }
     }
 
-    private bool CheckAtackRange()
+    private void MoveTowards(Vector3 target, float speed)
     {
-        float distToPlayer = Vector2.Distance(transform.position, player.position);
+        // Сохраняем текущую позицию по оси Y
+        Vector3 newPosition = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        transform.position = new Vector3(newPosition.x, transform.position.y, transform.position.z);
 
-        return distToPlayer < atackRange;
-
+        // Поворот спрайта при движении
+        FlipSprite(target.x);
     }
 
-    private void DoAtack()
+    private void FlipSprite(float targetX)
     {
-        doNothing = true;
-        anim.SetTrigger("attack");
-        //в анимации запускается функция EndDoNothing();
+        if ((targetX < transform.position.x && transform.localScale.x > 0) ||
+            (targetX > transform.position.x && transform.localScale.x < 0))
+        {
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
     }
 
-    public void EndDoNothing()
+    public void TakeDamage(int damage)
     {
-        doNothing = false;
+        if (currentState == EnemyState.Dead) return;
+
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            currentState = EnemyState.Dead;
+            StartCoroutine(Die());
+        }
+        else
+        {
+            currentState = EnemyState.TakingDamage;
+            StartCoroutine(RecoverFromDamage());
+        }
+    }
+
+    private IEnumerator Die()
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(gameObject);
+    }
+
+    private IEnumerator RecoverFromDamage()
+    {
+        yield return new WaitForSeconds(0.5f);
+        currentState = EnemyState.Patrolling;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if ((collision.gameObject == Hero.Instance.gameObject) && (!Hero.Instance.getHit) && (!Hero.Instance.isInvulnerability))
-            Hero.Instance.GetDamage(1, rb.transform);
+        if (collision.CompareTag("Player"))
+        {
+            //isPlayerInRange = true;
+
+            // Если игрок входит в зону атаки, он получает урон
+            Hero.Instance.GetDamage(1, this.transform);
+        }
     }
 
-    private void DoChasing()
+    private void OnTriggerExit2D(Collider2D collision)
     {
-
-        float distToPlayer = Vector2.Distance(transform.position, player.position);
-
-        if (distToPlayer < chaseRange)
+        if (collision.CompareTag("Player"))
         {
-            if (transform.position.x < player.position.x)
-            {
-                rb.velocity = new Vector2(speedMovementChase, 0);
-            }
-            else if (transform.position.x > player.position.x)
-            {
-                rb.velocity = new Vector2(-speedMovementChase, 0);
-            }
-        }
-        else
-        {
-            StartCoroutine(NothingLoop());
-            isChasing = false;
-            rb.velocity = Vector2.zero;
+            //isPlayerInRange = false;
         }
     }
-
-
 }
