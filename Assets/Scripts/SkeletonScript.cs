@@ -44,6 +44,7 @@ public class EnemyStateMachine : MonoBehaviour
         pos = transform.position;
 
         animator.SetBool("walking", Mathf.Abs(velocity.x) > 0 ? true : false);
+        
 
         if (isAttacking) return; // Если враг атакует, игнорируем другие действия
 
@@ -68,7 +69,6 @@ public class EnemyStateMachine : MonoBehaviour
                 break;
 
             case EnemyState.TakingDamage:
-                // Вызов анимации и переход в другое состояние через корутину
                 break;
 
             case EnemyState.Dead:
@@ -200,20 +200,25 @@ public class EnemyStateMachine : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (currentState == EnemyState.Dead) return;
+        if (currentState == EnemyState.Dead || currentState == EnemyState.TakingDamage) return;
 
         currentHealth -= damage;
+        //animator.SetTrigger("hit"); // Запускаем анимацию получения урона
+
         if (currentHealth <= 0)
         {
             currentState = EnemyState.Dead;
             StartCoroutine(Die());
+            animator.SetTrigger("die");
         }
         else
         {
+            animator.SetTrigger("getHit");
             currentState = EnemyState.TakingDamage;
             StartCoroutine(RecoverFromDamage());
         }
     }
+
 
     private IEnumerator Die()
     {
@@ -236,13 +241,17 @@ public class EnemyStateMachine : MonoBehaviour
             // Если игрок входит в зону атаки, он получает урон
             Hero.Instance.GetDamage(1, this.transform);
         }
+
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.CompareTag("Player"))
+        // Если столкновение со снарядом
+        if (collision.gameObject.CompareTag("Projectile"))
         {
-            //isPlayerInRange = false;
+            TakeDamage(1); // Враг получает урон
+            Destroy(collision.gameObject); // Уничтожаем снаряд после попадания
         }
     }
+
 }

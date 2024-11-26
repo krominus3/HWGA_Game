@@ -14,13 +14,20 @@ public class DroneController : MonoBehaviour
     
     private Vector3 offset; // Смещение относительно игрока
     private float hoverTimer; // Время для синусоидального движения
-    private bool isFacingRight = true;
     private Vector3 pos, velocity;
+
+    public bool isFacingRight = true;
+    public static DroneController Instance { get; set; }
+
 
     void Start()
     {
         offset = new Vector3(0, hoverHeight, 0); // Задаем начальное смещение
         pos = transform.position;
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
     }
 
     void Update()

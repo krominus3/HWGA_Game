@@ -28,20 +28,26 @@ public class DroneShooting : MonoBehaviour
     {
         // Найти ближайшего врага в радиусе
         Collider2D nearestEnemy = Physics2D.OverlapCircle(transform.position, autoAimRadius, enemyLayer);
-        Vector2 direction = Vector2.right; // Направление по умолчанию
+        Vector2 direction = DroneController.Instance.isFacingRight ? Vector2.right : Vector2.left; // Направление по умолчанию
+
+
 
         if (nearestEnemy != null)
         {
             direction = (nearestEnemy.transform.position - transform.position).normalized;
         }
 
-        // Создаем снаряд
-        GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        // Рассчитываем угол в направлении выстрела
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // Создаем снаряд и поворачиваем его в сторону выстрела
+        GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.Euler(0, 0, angle));
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
         rb.velocity = direction * projectileSpeed;
 
         // Можно добавить эффект/звук выстрела
     }
+
 
     // Для визуализации радиуса автонаведения в редакторе
     void OnDrawGizmosSelected()
