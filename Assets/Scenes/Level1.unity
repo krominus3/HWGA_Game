@@ -501,6 +501,7 @@ GameObject:
   m_Component:
   - component: {fileID: 86783834}
   - component: {fileID: 86783833}
+  - component: {fileID: 86783836}
   - component: {fileID: 86783835}
   m_Layer: 0
   m_Name: Drone
@@ -521,12 +522,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beda5c267ab10d143a35108ef44a8486, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
-  rotationSpeed: 2
-  attackRange: 5
-  followDistance: 1
-  projectilePrefab: {fileID: 0}
-  projectileSpeed: 10
+  player: {fileID: 438407229}
+  hoverHeight: 2.8
+  followSpeed: 2
+  hoverAmplitude: 0.3
+  hoverFrequency: 2
 --- !u!4 &86783834
 Transform:
   m_ObjectHideFlags: 0
@@ -541,6 +541,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1374780250}
+  - {fileID: 1794712082}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &86783835
@@ -558,7 +559,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -570,6 +571,26 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &86783836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 86783831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b1690706398fe245bf82d7ff7356030, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 962637710709793490, guid: 567e1475336234a49b7c346b661949b7, type: 3}
+  firePoint: {fileID: 1794712082}
+  projectileSpeed: 10
+  fireCooldown: 1
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  autoAimRadius: 5
 --- !u!4 &105760926 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1320626399416490158, guid: b4a4a4d4eaaae3f498692e3acb8ef636, type: 3}
@@ -7041,7 +7062,7 @@ Transform:
   m_GameObject: {fileID: 438407225}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -66.48, y: 32.54, z: -0.014116665}
+  m_LocalPosition: {x: -66.51, y: 32.09, z: -0.014116665}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -19720,7 +19741,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -1169942668, guid: f010776b0e8f53448bd489e5b17ddca8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -21418,6 +21439,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3117462883392041107, guid: 12c8e201bbe25674d89b68679ab4a862, type: 3}
   m_PrefabInstance: {fileID: 1590516604}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1794712081
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1794712082}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 2800000, guid: 0f5597de928ba6547895c4cdb9fa4185, type: 3}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1794712082
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794712081}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.345, y: -0.245, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 86783834}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1798823811
 GameObject:
   m_ObjectHideFlags: 0
