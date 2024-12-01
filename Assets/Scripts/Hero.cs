@@ -42,8 +42,13 @@ public class Hero : MonoBehaviour
 
     public static Hero Instance { get; set; }
 
+    private SoundManager soundManager;
+
     private void Awake()
     {
+        //-------------
+        soundManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<SoundManager>();
+        //-------------
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         tr = GetComponent<TrailRenderer>();
@@ -56,7 +61,6 @@ public class Hero : MonoBehaviour
 
     void Update()
     {
-        onGround = isGrounded();
         horizontal = Input.GetAxisRaw("Horizontal");
 
         States();
@@ -91,6 +95,11 @@ public class Hero : MonoBehaviour
 
     private void States()
     {
+        if (onGround != isGrounded() && onGround == false)
+        {
+            soundManager.PlayLandingSound();
+        }
+        onGround = isGrounded();
         anim.SetFloat("moveX", Mathf.Abs(horizontal));
         anim.SetFloat("moveY", rb.velocity.y);
         anim.SetBool("getHit", getHit);
@@ -99,7 +108,7 @@ public class Hero : MonoBehaviour
 
         if (healthPoints <= 0)
             anim.SetBool("dying", true);
-        else 
+        else
             anim.SetBool("dying", false);
 
     }
@@ -109,6 +118,7 @@ public class Hero : MonoBehaviour
         healthPoints -= DamageCount;
         getHit = true;
         Debug.Log(healthPoints);
+        soundManager.PlayGetHitSound();
 
         if (healthPoints > 0)
         {
@@ -198,9 +208,9 @@ public class Hero : MonoBehaviour
 
     private void Jump()
     {
-
         if (coyoteTimeCounter > 0f && jumpBufferCounter > 0f)
         {
+            soundManager.PlayPreJumpSound();
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
 
             jumpBufferCounter = 0f;
@@ -238,15 +248,12 @@ public class Hero : MonoBehaviour
             return false;
         else
             foreach (Collider2D collider in colliders)
+            {
+                if (collider.CompareTag("Ground"))
                 {
-                    if (collider.CompareTag("Ground"))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
+            }
         return false;
-
     }
-    
-
 }

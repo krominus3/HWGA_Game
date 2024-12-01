@@ -11,18 +11,18 @@ public class Collectable_coin : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Animator anim;
-
+    private SoundManager soundManager;
 
     private bool pikedUp = false;
 
 
     private void Start()
     {
-        game_Manager = Game_manager.Instance; // Получаем ссылку на Game_manager
+        game_Manager = Game_manager.Instance; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ Game_manager
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();    
         anim = GetComponent<Animator>();
-
+        soundManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<SoundManager>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -34,10 +34,10 @@ public class Collectable_coin : MonoBehaviour
             anim.SetTrigger("pickUp");
             rb.gravityScale = 1;
             rb.velocity = new Vector2(1, 2);
-            //временная мера
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
             TimeManager.Instance.AddTime(5);
-            //в аниматоре вызывается уничтожение после анмации подбора
-
+            //пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+            soundManager.PlayCoinSound();
         }
     }
 
