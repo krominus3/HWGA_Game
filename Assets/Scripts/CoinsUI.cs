@@ -30,6 +30,6 @@ public class CoinsUI : MonoBehaviour
     private void UpdateCoinsUI()
     {
         int currentCoins = coinManager.GetCoinsCount(); 
-        coinsText.text = "Монеты: " + currentCoins.ToString();
+        coinsText.text = currentCoins.ToString();
     }
 }
