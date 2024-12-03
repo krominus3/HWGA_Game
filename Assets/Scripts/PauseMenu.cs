@@ -5,63 +5,57 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    public bool PauseGame; // Флаг паузы игры
-    public GameObject pauseGameMenu; // Панель меню паузы
-    public GameObject upgradeShop; // Панель магазина
+    public bool PauseGame; 
+    public GameObject pauseGameMenu;
+    public GameObject upgradeShop;
 
     void Update()
     {
-        // Обработка клавиши Escape для открытия/закрытия меню паузы
+        
         if (Input.GetKeyUp(KeyCode.Escape))
         {
             if (PauseGame)
             {
-                Resume(); // Снять паузу или закрыть магазин
+                Resume(); 
             }
             else
             {
-                Pause(); // Открыть меню паузы
+                Pause(); 
             }
         }
     }
 
-    // Метод для снятия паузы
     public void Resume()
     {
-        // Если открыт магазин, закрываем его
         if (upgradeShop.activeSelf)
         {
             upgradeShop.SetActive(false);
         }
         else
         {
-            // Иначе закрываем меню паузы
             pauseGameMenu.SetActive(false);
         }
 
-        Time.timeScale = 1.0f; // Снимаем паузу
+        Time.timeScale = 1.0f; 
         PauseGame = false;
     }
 
-    // Метод для постановки игры на паузу
     public void Pause()
     {
-        pauseGameMenu.SetActive(true); // Показываем меню паузы
-        Time.timeScale = 0f;           // Ставим игру на паузу
+        pauseGameMenu.SetActive(true); 
+        Time.timeScale = 0f;           
         PauseGame = true;
     }
 
-    // Метод для открытия магазина
     public void OpenShop()
     {
-        upgradeShop.SetActive(true);  // Показываем панель магазина
-        pauseGameMenu.SetActive(false); // Закрываем меню паузы
+        upgradeShop.SetActive(true);  
+        pauseGameMenu.SetActive(false); 
     }
 
-    // Метод для возврата в главное меню
     public void LoadMenu()
     {
-        Time.timeScale = 1.0f; // Снимаем паузу
-        SceneManager.LoadScene("MainMenu"); // Загружаем сцену главного меню
+        Time.timeScale = 1.0f; 
+        SceneManager.LoadScene("MainMenu");
     }
 }

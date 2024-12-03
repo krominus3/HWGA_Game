@@ -9,8 +9,8 @@ public class UpgradeShopManager : MonoBehaviour
         public string name;
         public int level = 0;
         public int maxLevel = 10;
-        public int basePrice;
-        public int priceIncrement;
+        public int basePrice = 1;
+        public int priceIncrement = 1;
         public Button button;
         public Text levelText;
         public Text priceText;
@@ -20,18 +20,67 @@ public class UpgradeShopManager : MonoBehaviour
     public Text coinText;
     public Button continueButton;
     private Game_manager gameManager;
+    private Hero hero;
 
     void Start()
     {
         gameManager = Game_manager.Instance;
+
+        if (Hero.Instance != null)
+        {
+            hero = Hero.Instance;
+        }
+        else
+        {
+            Debug.LogError("Hero instance not found!");
+            return;
+        }
+
+
         UpdateUI();
+
+        InitializeUpgrades();
 
         foreach (var upgrade in upgrades)
         {
-            upgrade.button.onClick.AddListener(() => PurchaseUpgrade(upgrade));
+            var capturedUpgrade = upgrade;
+            upgrade.button.onClick.AddListener(() => PurchaseUpgrade(capturedUpgrade));
         }
 
         continueButton.onClick.AddListener(CloseShop);
+    }
+
+    void InitializeUpgrades()
+    {
+        foreach (var upgrade in upgrades)
+        {
+            switch (upgrade.name)
+            {
+                case "Speed":
+                    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(hero.speed) - 6); // 6 - минимальный базовый уровень скорости героя
+                    break;
+                case "JumpHeight":
+                    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(hero.jumpForce) - 15); // 15 - базовый уровень прыжка героя
+                    break;
+                case "Health":
+                    upgrade.level = Mathf.Max(0, hero.healthPoints - 3); // 3 - начальное количество здоровья
+                    break;
+                // Возможные другие улучшения
+                //case "BulletCount":
+                //    // Если есть логика для количества патронов, например, начальный уровень 0
+                //    upgrade.level = Mathf.Max(0, hero.bullets - 10); // Пример для начальных патронов
+                //    break;
+                //case "LifeTime":
+                //    // Если есть параметр жизни героя, задать начальный уровень
+                //    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(hero.lifeTime) - 10); // Пример жизни героя
+                //    break;
+                default:
+                    Debug.LogWarning($"Неизвестное улучшение: {upgrade.name}");
+                    break;
+            }
+
+            upgrade.level = Mathf.Clamp(upgrade.level, 0, upgrade.maxLevel);
+        }
     }
 
     void UpdateUI()
@@ -43,12 +92,13 @@ public class UpgradeShopManager : MonoBehaviour
             {
                 int currentPrice = upgrade.basePrice + upgrade.priceIncrement * upgrade.level;
                 upgrade.priceText.text = currentPrice.ToString();
-                upgrade.levelText.text = $"Lvl: {upgrade.level}";
+                upgrade.levelText.text = $"Уровень: {upgrade.level}";
                 upgrade.button.interactable = gameManager.GetCoinsCount() >= currentPrice;
             }
             else
             {
-                upgrade.priceText.text = "Max";
+                upgrade.priceText.text = "MAX";
+                upgrade.levelText.text = $"Уровень: {upgrade.level}";
                 upgrade.button.interactable = false;
             }
         }
@@ -57,13 +107,17 @@ public class UpgradeShopManager : MonoBehaviour
     void PurchaseUpgrade(Upgrade upgrade)
     {
         int price = upgrade.basePrice + upgrade.priceIncrement * upgrade.level;
-        if (gameManager.GetCoinsCount() >= price)
+        if (gameManager.GetCoinsCount() >= price && upgrade.level < upgrade.maxLevel)
         {
             gameManager.coinsCount -= price;
             upgrade.level++;
 
             ApplyUpgradeEffect(upgrade);
             UpdateUI();
+        }
+        else
+        {
+            Debug.Log("Not enough coins or max level reached!");
         }
     }
 
@@ -72,26 +126,15 @@ public class UpgradeShopManager : MonoBehaviour
         switch (upgrade.name)
         {
             case "Speed":
-                Hero.Instance.speed += 1f;
+                hero.speed += 1f;
                 break;
             case "JumpHeight":
-                Hero.Instance.jumpForce += 1f;
-                break;
-            case "BulletCount":
-                // Дополнить при наличии логики
-                break;
-            case "Revive":
-                // Уровень возрождения (одноразовое улучшение)
-                break;
-            case "CoinMultiplier":
-                // Логика для множителя монет
+                hero.jumpForce += 1f;
                 break;
             case "Health":
-                Hero.Instance.healthPoints++;
+                hero.healthPoints++;
                 break;
-            case "LifeTime":
-                // Увеличить время жизни
-                break;
+
         }
     }
 
