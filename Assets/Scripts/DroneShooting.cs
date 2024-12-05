@@ -1,18 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DroneShooting : MonoBehaviour
 {
-    [SerializeField] GameObject projectilePrefab; // Префаб снаряда
-    [SerializeField] Transform firePoint; // Точка, откуда вылетает снаряд
-    [SerializeField] float projectileSpeed = 10f; // Скорость снаряда
-    [SerializeField] float fireCooldown = 1f; // Задержка между выстрелами
-    [SerializeField] LayerMask enemyLayer; // Слой врагов
-    [SerializeField] float autoAimRadius = 5f; // Радиус автонаведения
+    [SerializeField] GameObject projectilePrefab; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    [SerializeField] Transform firePoint; // пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+    [SerializeField] float projectileSpeed = 10f; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    [SerializeField] float fireCooldown = 1f; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    [SerializeField] LayerMask enemyLayer; // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+    [SerializeField] float autoAimRadius = 5f; // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+
+    SoundManager soundManager;
     
     private float fireTimer;
 
+    private void Start(){
+        soundManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<SoundManager>();
+    }
     void Update()
     {
         fireTimer += Time.deltaTime;
@@ -21,14 +27,16 @@ public class DroneShooting : MonoBehaviour
         {
             fireTimer = 0f;
             Shoot();
+            soundManager.PlayShotSound();
         }
     }
 
     void Shoot()
     {
-        // Найти ближайшего врага в радиусе
+
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Collider2D nearestEnemy = Physics2D.OverlapCircle(transform.position, autoAimRadius, enemyLayer);
-        Vector2 direction = DroneController.Instance.isFacingRight ? Vector2.right : Vector2.left; // Направление по умолчанию
+        Vector2 direction = DroneController.Instance.isFacingRight ? Vector2.right : Vector2.left; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 
 
@@ -37,19 +45,19 @@ public class DroneShooting : MonoBehaviour
             direction = (nearestEnemy.transform.position - transform.position).normalized;
         }
 
-        // Рассчитываем угол в направлении выстрела
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        // Создаем снаряд и поворачиваем его в сторону выстрела
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.Euler(0, 0, angle));
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
         rb.velocity = direction * projectileSpeed;
 
-        // Можно добавить эффект/звук выстрела
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     }
 
 
-    // Для визуализации радиуса автонаведения в редакторе
+    // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

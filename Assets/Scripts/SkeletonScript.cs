@@ -23,10 +23,12 @@ public class EnemyStateMachine : MonoBehaviour
     private int currentHealth;
     private Vector3 initialPosition;
     //private bool isPlayerInRange;
-    private Transform currentTarget; // Текущая точка патрулирования
+    private Transform currentTarget; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private Vector3 pos, velocity;
 
-    private bool isAttacking = false; // Флаг, который будет указывать, что враг атакует
+    private bool isAttacking = false; // пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+
+    private SoundManager soundManager;
 
     private void Start()
     {
@@ -34,8 +36,9 @@ public class EnemyStateMachine : MonoBehaviour
         animator = GetComponent<Animator>();
         currentHealth = maxHealth;
         initialPosition = transform.position;
-        currentTarget = patrolRight; // Начинаем патрулирование от левой к правой точке
+        currentTarget = patrolRight; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         pos = transform.position;
+        soundManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<SoundManager>();
     }
 
     private void Update()
@@ -44,9 +47,8 @@ public class EnemyStateMachine : MonoBehaviour
         pos = transform.position;
 
         animator.SetBool("walking", Mathf.Abs(velocity.x) > 0 ? true : false);
-        
 
-        if (isAttacking) return; // Если враг атакует, игнорируем другие действия
+        if (isAttacking) return; // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
         switch (currentState)
         {
@@ -72,24 +74,24 @@ public class EnemyStateMachine : MonoBehaviour
                 break;
 
             case EnemyState.Dead:
-                // Логика смерти
+                // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 break;
         }
     }
 
     private void Patrol()
     {
-        // Проверка на игрока в зоне агрессии
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (Vector3.Distance(transform.position, player.position) < agroRange && !Hero.Instance.isDead)
         {
             currentState = EnemyState.Chasing;
-            return; // Прекращаем патрулирование, если начали преследовать игрока
+            return; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         }
 
-        // Двигаемся к текущей точке
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         MoveTowards(currentTarget.position, speedMovementPatrol);
 
-        // Если враг достиг текущей цели, переключаем точку
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (Vector3.Distance(transform.position, currentTarget.position) < 0.1f)
         {
             currentTarget = currentTarget == patrolLeft ? patrolRight : patrolLeft;
@@ -98,7 +100,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void CheckForPlayer()
     {
-        // Если игрок мертв, не проверяем его
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
         if (Hero.Instance.isDead) return;
 
         if (player != null && Vector3.Distance(transform.position, player.position) < agroRange)
@@ -113,12 +115,12 @@ public class EnemyStateMachine : MonoBehaviour
 
         Vector3 target = player.position;
 
-        // Ограничиваем движение врага только по оси X в пределах области погони
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ X пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         target = new Vector3(Mathf.Clamp(target.x, chaseLeft.position.x, chaseRight.position.x), transform.position.y, transform.position.z);
 
         MoveTowards(target, speedMovementChase);
 
-        // Если игрок вышел за пределы chaseRange, враг возвращается к патрулю
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ chaseRange, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (Vector3.Distance(transform.position, player.position) > chaseRange)
         {
             currentState = EnemyState.Returning;
@@ -135,44 +137,44 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void Attack()
     {
-        isAttacking = true; // Враг начал атаку
+        isAttacking = true; // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
-        animator.SetTrigger("attack"); // Запуск анимации атаки
+        animator.SetTrigger("attack"); // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
-        // Враг наносит урон, если игрок входит в зону атаки (в Trigger)
-        // Мы делаем это через OnTriggerEnter2D, чтобы урон был нанесен, как только игрок попадет в коллайдер атаки
-        StartCoroutine(EndAttack()); // Завершаем атаку после задержки
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅ Trigger)
+        // пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ OnTriggerEnter2D, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+        StartCoroutine(EndAttack()); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     }
 
     private IEnumerator EndAttack()
     {
-        yield return new WaitForSeconds(1f); // Задержка на продолжительность анимации атаки
+        yield return new WaitForSeconds(1f); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
 
         if (Vector3.Distance(transform.position, player.position) < chaseRange && !Hero.Instance.isDead)
         {
-            currentState = EnemyState.Chasing; // Если игрок в пределах зоны преследования, продолжаем его преследовать
+            currentState = EnemyState.Chasing; // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         }
         else
         {
-            currentState = EnemyState.Patrolling; // Если игрок слишком далеко, возвращаемся к патрулированию
+            currentState = EnemyState.Patrolling; // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         }
 
-        isAttacking = false; // Завершаем атаку, враг теперь может двигаться
+        isAttacking = false; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     }
 
     private void ReturnToPatrol()
     {
         MoveTowards(initialPosition, speedMovementPatrol);
 
-        // Если игрок в зоне агрессии, начинаем преследование
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (Vector3.Distance(transform.position, player.position) < agroRange)
         {
             currentState = EnemyState.Chasing;
-            return; // Прекращаем возвращение, если начинаем преследовать
+            return; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         }
 
-        // Если враг вернулся на начальную точку, начинаем патрулирование
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (Vector3.Distance(transform.position, initialPosition) < 0.1f)
         {
             currentState = EnemyState.Patrolling;
@@ -181,11 +183,11 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void MoveTowards(Vector3 target, float speed)
     {
-        // Сохраняем текущую позицию по оси Y
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ Y
         Vector3 newPosition = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
         transform.position = new Vector3(newPosition.x, transform.position.y, transform.position.z);
 
-        // Поворот спрайта при движении
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         FlipSprite(target.x);
     }
 
@@ -203,7 +205,9 @@ public class EnemyStateMachine : MonoBehaviour
         if (currentState == EnemyState.Dead || currentState == EnemyState.TakingDamage) return;
 
         currentHealth -= damage;
-        //animator.SetTrigger("hit"); // Запускаем анимацию получения урона
+        soundManager.PlayEnemyGetHitSound();
+
+        //animator.SetTrigger("hit"); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
         if (currentHealth <= 0)
         {
@@ -238,7 +242,7 @@ public class EnemyStateMachine : MonoBehaviour
         {
             //isPlayerInRange = true;
 
-            // Если игрок входит в зону атаки, он получает урон
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
             Hero.Instance.GetDamage(1, this.transform);
         }
 
@@ -246,11 +250,11 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Если столкновение со снарядом
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (collision.gameObject.CompareTag("Projectile"))
         {
-            TakeDamage(1); // Враг получает урон
-            Destroy(collision.gameObject); // Уничтожаем снаряд после попадания
+            TakeDamage(1); // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+            Destroy(collision.gameObject); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         }
     }
 
