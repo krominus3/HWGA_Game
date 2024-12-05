@@ -4,20 +4,19 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private Transform player;
-    private Vector3 pos;
+    public Transform player;  // Ссылка на объект игрока
+    public Vector2 offset;    // Смещение камеры относительно игрока
+    public float smoothSpeed = 0.125f; // Скорость сглаживания движения камеры
 
-    private void Awake()
+    private void FixedUpdate()
     {
-        if (!player)
-            player = FindObjectOfType<Hero>().transform;
-    }
+        if (player == null) return; // Проверяем, назначен ли игрок
 
-    void Update()
-    {
-        pos = player.position;
-        pos.z = -10f;
-        pos.y = player.position.y + 2;
-        transform.position = Vector3.Lerp(transform.position, pos, Time.deltaTime);
+        // Рассчитываем целевую позицию камеры
+        Vector3 targetPosition = new Vector3(player.position.x + offset.x, player.position.y + offset.y, transform.position.z);
+
+        // Плавное движение камеры к целевой позиции
+        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed);
     }
 }
+
