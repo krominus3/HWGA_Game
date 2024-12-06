@@ -8,6 +8,7 @@ public class HealthBar : MonoBehaviour
     public int maxHealth; // Максимальное количество хп
     private List<Image> hearts = new List<Image>();
 
+
     private void Start()
     {
         if (heartPrefab == null)
@@ -34,8 +35,8 @@ public class HealthBar : MonoBehaviour
 
     private void UpdateHealthDisplay()
     {
-        int currentHealth = Hero.Instance.healthPoints;
 
+        int currentHealth = Hero.Instance.healthPoints;
         for (int i = 0; i < hearts.Count; i++)
         {
             if (i < currentHealth)
@@ -56,7 +57,7 @@ public class HealthBar : MonoBehaviour
         }
 
         // Удаление лишних сердечек, если текущее здоровье меньше их количества
-        while (hearts.Count > currentHealth)
+        while (hearts.Count > currentHealth && currentHealth != -1)
         {
             Destroy(hearts[hearts.Count - 1].gameObject);
             hearts.RemoveAt(hearts.Count - 1);

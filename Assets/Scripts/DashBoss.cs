@@ -8,7 +8,7 @@ public class DashBoss : MonoBehaviour
     public float dashSpeed = 20f;       // Скорость движения при дэше
     public float dashDistance = 10f;    // Расстояние дэша
     public float dashCooldown = 5f;     // Время между дэшами
-    public float collisionPause = 1f;   // Время остановки после столкновения
+    public float collisionPause = 0.9f;   // Время остановки после столкновения
     public float deathMoveSpeed = 2f;   // Скорость движения в точку после смерти
     public int maxHealth = 3;           // Максимальное количество здоровья
     public Transform groundPoint;       // Точка для приземления босса
@@ -19,10 +19,11 @@ public class DashBoss : MonoBehaviour
     private Transform player;
     private Vector2 dashTarget;
     private int currentHealth;
-    private float dashTimer;
+    private float dashTimer = 5f;
     private float pauseTimer;
 
     private Rigidbody2D rb;
+    private Animator anim;
 
     private void Start()
     {
@@ -30,14 +31,17 @@ public class DashBoss : MonoBehaviour
         currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
         currentState = BossState.Flying;
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        Debug.Log("Текущее состояние босса: " + currentState);
+        if (!rb.simulated) return;
+        //Debug.Log("Текущее состояние босса: " + currentState);
         switch (currentState)
         {
             case BossState.Flying:
+                anim.SetBool("isDashing", false);
                 Fly();
                 dashTimer -= Time.deltaTime;
                 if (dashTimer <= 0)
@@ -47,10 +51,12 @@ public class DashBoss : MonoBehaviour
                 break;
 
             case BossState.Dashing:
+                anim.SetBool("isDashing", true);
                 Dash();
                 break;
 
             case BossState.Paused:
+                
                 Pause();
                 break;
 
@@ -59,6 +65,7 @@ public class DashBoss : MonoBehaviour
                 break;
 
             case BossState.Stunned:
+                
                 // Босс стоит на месте, ничего не делает
                 break;
         }
@@ -105,22 +112,29 @@ public class DashBoss : MonoBehaviour
         pauseTimer -= Time.deltaTime;
         if (pauseTimer <= 0)
         {
-            currentState = BossState.Flying;
+            if (currentHealth <= 0)
+            {
+                currentState = BossState.Dying;
+            }
+            else
+            {
+                currentState = BossState.Flying;
+            }
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (currentState == BossState.Dashing)
+        if (currentState != BossState.Stunned)
         {
             if (collision.collider.CompareTag("Player"))
             {
                 // Наносим урон игроку и передаем позицию столкновения
                 Hero.Instance.GetDamage(1, transform);
 
-                // Отскакиваем назад
-                Vector2 bounceDirection = (transform.position - collision.transform.position).normalized;
-                rb.AddForce(bounceDirection * 5f, ForceMode2D.Impulse);
+                //// Отскакиваем назад
+                //Vector2 bounceDirection = (transform.position - collision.transform.position).normalized;
+                //rb.AddForce(bounceDirection * 5f, ForceMode2D.Impulse);
 
                 currentState = BossState.Flying;
             }
@@ -137,16 +151,15 @@ public class DashBoss : MonoBehaviour
     {
         currentHealth -= damage;
         print(currentHealth);
-        if (currentHealth <= 0)
-        {
-            currentState = BossState.Dying;
-        }
-        else
-        {
-            // Переходим в состояние паузы
-            currentState = BossState.Paused;
-            pauseTimer = collisionPause;
-        }
+
+        anim.SetTrigger("getHit");
+        anim.SetBool("isDashing", false);
+        // Переходим в состояние паузы
+
+        currentState = BossState.Paused;
+        pauseTimer = collisionPause;
+
+
     }
 
     private void MoveToGroundPoint()
@@ -160,6 +173,8 @@ public class DashBoss : MonoBehaviour
         // Останавливаемся, когда достигли точки
         if (Vector3.Distance(transform.position, groundPoint.position) < 0.1f)
         {
+            
+            anim.SetTrigger("isDie");
             currentState = BossState.Stunned;
             rb.velocity = Vector2.zero;
             rb.isKinematic = true; // Отключаем физику

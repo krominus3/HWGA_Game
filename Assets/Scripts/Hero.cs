@@ -40,9 +40,9 @@ public class Hero : MonoBehaviour
     public bool isDead = false;
     private bool onGround = true;
 
+    private SoundManager soundManager;
     public static Hero Instance { get; set; }
 
-    private SoundManager soundManager;
 
     private void Awake()
     {

@@ -16,9 +16,11 @@ public class DroneShooting : MonoBehaviour
     
     private float fireTimer;
 
-    private void Start(){
+    private void Awake()
+    {
         soundManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<SoundManager>();
     }
+
     void Update()
     {
         fireTimer += Time.deltaTime;
