@@ -1448,7 +1448,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.06587362, y: -0.15809631}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1459,7 +1459,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2.554614, y: 2.1066742}
   m_EdgeRadius: 0
 --- !u!4 &251805835
 Transform:
@@ -7201,12 +7201,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d434dba9354d4e24dad443f9d873a6a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinSound: {fileID: 0}
-  landingSound: {fileID: 0}
-  getHitSound: {fileID: 0}
-  enemyGetHitSound: {fileID: 0}
-  preJumpSound: {fileID: 0}
-  shotSound: {fileID: 0}
+  coinSound: {fileID: 8300000, guid: 7c1084d9365669a40a948dbc426d1ca4, type: 3}
+  landingSound: {fileID: 8300000, guid: fa44949ca47329a4290beed0547e9f19, type: 3}
+  getHitSound: {fileID: 8300000, guid: 0d80e0cbcc5e0b447a45f3c3779905f7, type: 3}
+  enemyGetHitSound: {fileID: 8300000, guid: e8366e7356fe7f946966ae3493c2f28d, type: 3}
+  preJumpSound: {fileID: 8300000, guid: f504739362727934a9466ab63398a080, type: 3}
+  shotSound: {fileID: 8300000, guid: b5ec6307b089eba418ab827bfb89497d, type: 3}
 --- !u!82 &427870950
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7402,7 +7402,7 @@ Transform:
   m_GameObject: {fileID: 438407225}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -66.619995, y: 32.47, z: -0.014116665}
+  m_LocalPosition: {x: -20.4, y: -12.9, z: -0.014116665}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -25184,7 +25184,7 @@ Transform:
   m_GameObject: {fileID: 2109800714}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.28989792, y: -9.147896, z: -2.7827718}
+  m_LocalPosition: {x: 0.28989792, y: -7.397896, z: -2.7827718}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
