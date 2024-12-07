@@ -78,6 +78,10 @@ public class DashBoss : MonoBehaviour
         // Лететь за игроком
         Vector2 targetPosition = player.position;
         Vector2 newPosition = Vector2.MoveTowards(transform.position, targetPosition, flySpeed * Time.deltaTime);
+
+        // Поворачиваем модель в направлении движения
+        FlipModel(targetPosition);
+
         rb.MovePosition(newPosition);
     }
 
@@ -98,12 +102,32 @@ public class DashBoss : MonoBehaviour
     {
         // Двигаемся к расчетной точке с указанной скоростью
         Vector2 newPosition = Vector2.MoveTowards(transform.position, dashTarget, dashSpeed * Time.deltaTime);
+
+        // Поворачиваем модель в направлении движения
+        FlipModel(dashTarget);
+
         rb.MovePosition(newPosition);
 
         // Если достигли точки дэша, возвращаемся в состояние полета
         if ((Vector2)transform.position == dashTarget)
         {
             currentState = BossState.Flying;
+        }
+    }
+
+    private void FlipModel(Vector2 targetPosition)
+    {
+        // Определяем направление движения
+        float direction = targetPosition.x - transform.position.x;
+
+        // Если движемся вправо — масштаб по X положительный, если влево — отрицательный
+        if (direction > 0 && transform.localScale.x < 0)
+        {
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+        }
+        else if (direction < 0 && transform.localScale.x > 0)
+        {
+            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
     }
 
