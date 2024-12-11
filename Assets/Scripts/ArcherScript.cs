@@ -13,10 +13,12 @@ public class ArcherAI : MonoBehaviour
     [SerializeField] private int maxHealth = 3; // Максимальное здоровье
 
     private Transform player;
-    //private Animator animator;
+    private Animator animator;
     private Transform currentTarget; // Текущая точка патрулирования
     private bool isShooting = false;
     private int currentHealth;
+    private Vector3 pos, velocity;
+    private bool getHit = false;
 
     private enum ArcherState { Patrolling, Shooting, TakingDamage, Dead }
     private ArcherState currentState = ArcherState.Patrolling;
@@ -24,14 +26,19 @@ public class ArcherAI : MonoBehaviour
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        //animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
         currentTarget = patrolLeft; // Начинаем патрулирование с левой точки
         currentHealth = maxHealth; // Устанавливаем здоровье
     }
 
     private void Update()
     {
-        if (currentState == ArcherState.Dead) return; // Никаких действий, если враг мёртв
+        if (currentState == ArcherState.Dead || getHit == true) return; // Никаких действий, если враг мёртв
+
+        velocity = (transform.position - pos) / Time.deltaTime;
+        pos = transform.position;
+
+        animator.SetBool("walking", Mathf.Abs(velocity.x) > 0 ? true : false);
 
         switch (currentState)
         {
@@ -41,7 +48,7 @@ public class ArcherAI : MonoBehaviour
                 break;
 
             case ArcherState.Shooting:
-                if (!isShooting)
+                if (!isShooting && !getHit)
                     StartCoroutine(ShootAtPlayer());
                 break;
 
@@ -69,7 +76,9 @@ public class ArcherAI : MonoBehaviour
     private void CheckForPlayer()
     {
         // Если игрок в радиусе обнаружения, переходим в состояние стрельбы
-        if (player != null && Vector3.Distance(transform.position, player.position) < detectionRange && !Hero.Instance.isDead)
+        if (player != null && 
+            Vector3.Distance(transform.position, player.position) < detectionRange &&
+            !Hero.Instance.isDead)
         {
             currentState = ArcherState.Shooting;
         }
@@ -78,7 +87,7 @@ public class ArcherAI : MonoBehaviour
     private IEnumerator ShootAtPlayer()
     {
         isShooting = true;
-        //animator.SetTrigger("shoot"); // Запуск анимации стрельбы
+        animator.SetTrigger("attack"); // Запуск анимации стрельбы
 
         // Поворот к игроку
         if (player != null)
@@ -86,9 +95,9 @@ public class ArcherAI : MonoBehaviour
             FlipSprite(player.position.x);
         }
 
-        yield return new WaitForSeconds(0.5f); // Задержка перед созданием стрелы (время для анимации)
+        yield return new WaitForSeconds(0.7f); // Задержка перед созданием стрелы (время для анимации)
 
-        if (player != null && !Hero.Instance.isDead)
+        if (player != null && !Hero.Instance.isDead && !getHit)
         {
             ShootArrow();
         }
@@ -136,8 +145,8 @@ public class ArcherAI : MonoBehaviour
         if (currentState == ArcherState.Dead || currentState == ArcherState.TakingDamage) return;
 
         currentHealth -= damage;
-        //animator.SetTrigger("getHit");
-
+        animator.SetTrigger("getHit");
+        getHit = true;
         if (currentHealth <= 0)
         {
             currentState = ArcherState.Dead;
@@ -161,18 +170,20 @@ public class ArcherAI : MonoBehaviour
 
     private IEnumerator Die()
     {
-        //animator.SetTrigger("die");
+        animator.SetTrigger("die");
         yield return new WaitForSeconds(1f);
         Destroy(gameObject);
     }
 
     private IEnumerator RecoverFromDamage()
     {
+        // значение отмены стрельбы
         yield return new WaitForSeconds(0.5f);
+        getHit = false;
         currentState = ArcherState.Patrolling;
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         // Радиус обнаружения
         Gizmos.color = Color.red;

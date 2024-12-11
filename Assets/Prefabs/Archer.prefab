@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4719439984567975055}
   - component: {fileID: 3314396816559337348}
   - component: {fileID: 745972707572418733}
+  - component: {fileID: 5815666972636850067}
   m_Layer: 10
   m_Name: ArcherEnemy
   m_TagString: Untagged
@@ -117,8 +118,28 @@ MonoBehaviour:
   arrowPrefab: {fileID: 3674807774209327177, guid: 744b47b957097924f8ce20f3f76e30f2, type: 3}
   shootPoint: {fileID: 1329229738240220946}
   shootInterval: 2
-  attackRange: 1.5
   maxHealth: 3
+--- !u!95 &5815666972636850067
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631808698813254653}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 759705a0843ef0a44bf9a7d62dca21d7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5845729379009696109
 GameObject:
   m_ObjectHideFlags: 0
