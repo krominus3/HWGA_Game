@@ -9,7 +9,7 @@ public class Hero : MonoBehaviour
     [SerializeField] public int maxHealth = 6; // Начальное максимальное здоровье
     [SerializeField] public int healthPoints = 3; // Текущее здоровье
     [SerializeField] public float jumpForce = 15f;
-    [SerializeField] public int coinMultiplierLevel = 1; // Начальный уровень множителя монет
+    [SerializeField] public int coinMultiplier = 1; // Начальный уровень множителя монет
 
     [SerializeField] private float knockBackForceX = 10f;
     [SerializeField] private float knockBackForceY = 10f;

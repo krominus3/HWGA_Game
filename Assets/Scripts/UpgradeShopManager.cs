@@ -70,6 +70,9 @@ public class UpgradeShopManager : MonoBehaviour
                 case "CoinMultiplier":
                     upgrade.level = Mathf.Max(0, gameManager.coinMultiplier - 1); // 1 - базовый множитель
                     break;
+                case "LifeTime":
+                    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(TimeManager.Instance.lifeTime) - 10); // 10 - базовый уровень времени жизни
+                    break;
                 default:
                     Debug.LogWarning($"Неизвестное улучшение: {upgrade.name}");
                     break;
@@ -133,7 +136,9 @@ public class UpgradeShopManager : MonoBehaviour
             case "CoinMultiplier":
                 gameManager.coinMultiplier++;
                 gameManager.SaveCoinMultiplier(); // Сохранение множителя
-
+                break;
+            case "LifeTime":
+                TimeManager.Instance.AddTime(5); // Пример увеличения времени жизни
                 break;
         }
         gameManager.SaveHeroData(hero); // Сохраняем данные героя
