@@ -12,7 +12,11 @@ public class Game_manager : MonoBehaviour
     {
         LoadCoins();
         LoadCoinMultiplier();
-        LoadHealthData(Hero.Instance);
+
+        if (Hero.Instance != null)
+        {
+            LoadHeroData(Hero.Instance); // Загрузка данных героя
+        }
     }
 
     private void Awake()
@@ -64,20 +68,35 @@ public class Game_manager : MonoBehaviour
         }
     }
 
-    public void SaveHealthData(Hero hero)
+    //public void SaveHealthData(Hero hero)
+    //{
+    //    PlayerPrefs.SetInt("Hero_Health", hero.healthPoints);
+    //    PlayerPrefs.SetInt("Hero_MaxHealth", hero.maxHealth);
+    //    PlayerPrefs.Save();
+    //}
+
+    //public void LoadHealthData(Hero hero)
+    //{
+    //    hero.healthPoints = PlayerPrefs.GetInt("Hero_Health", hero.healthPoints);
+    //    hero.maxHealth = PlayerPrefs.GetInt("Hero_MaxHealth", hero.maxHealth);
+
+    //    // Уведомляем HealthBar обновить количество сердечек
+    //    HealthBar.Instance?.UpdateMaxHealth(hero.maxHealth);
+    //}
+
+    public void SaveHeroData(Hero hero)
     {
+        PlayerPrefs.SetFloat("Hero_Speed", hero.speed);
+        PlayerPrefs.SetFloat("Hero_JumpForce", hero.jumpForce);
         PlayerPrefs.SetInt("Hero_Health", hero.healthPoints);
-        PlayerPrefs.SetInt("Hero_MaxHealth", hero.maxHealth);
         PlayerPrefs.Save();
     }
 
-    public void LoadHealthData(Hero hero)
+    public void LoadHeroData(Hero hero)
     {
+        hero.speed = PlayerPrefs.GetFloat("Hero_Speed", hero.speed);
+        hero.jumpForce = PlayerPrefs.GetFloat("Hero_JumpForce", hero.jumpForce);
         hero.healthPoints = PlayerPrefs.GetInt("Hero_Health", hero.healthPoints);
-        hero.maxHealth = PlayerPrefs.GetInt("Hero_MaxHealth", hero.maxHealth);
-
-        // Уведомляем HealthBar обновить количество сердечек
-        HealthBar.Instance?.UpdateMaxHealth(hero.maxHealth);
     }
 
     public void SaveCoins()
@@ -101,5 +120,4 @@ public class Game_manager : MonoBehaviour
     {
         coinMultiplier = PlayerPrefs.GetInt("CoinMultiplier", 1); // По умолчанию 1
     }
-
 }

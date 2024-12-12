@@ -135,8 +135,8 @@ public class UpgradeShopManager : MonoBehaviour
                 gameManager.SaveCoinMultiplier(); // Сохранение множителя
 
                 break;
-
         }
+        gameManager.SaveHeroData(hero); // Сохраняем данные героя
     }
 
     void OnEnable()
