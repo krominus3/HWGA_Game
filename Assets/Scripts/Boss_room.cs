@@ -1,44 +1,65 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class Boss_room : MonoBehaviour
 {
-    [SerializeField] Animator doorAnim1;
-    [SerializeField] Animator doorAnim2;
+    [SerializeField] List<Animator> doorAnimators;
     [SerializeField] Rigidbody2D bossRB;
 
     private BoxCollider2D bc;
-
-    public static Boss_room Instance { get; set; }
+    private bool doorsClosed = false; // Флаг для отслеживания состояния дверей
 
     void Start()
     {
         bc = GetComponent<BoxCollider2D>();
-        if (Instance == null)
-            Instance = this;
+        bossRB.simulated = false; // Обеспечивает, что Rigidbody2D босса отключен по умолчанию
+    }
+
+    private void FixedUpdate()
+    {
+        if (bossRB.simulated)
+        {
+            CloseDoors();
+        }
         else
-            Destroy(gameObject);
+        {
+            OpenDoors();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if ((collision.gameObject == Hero.Instance.gameObject))
+        if (collision.gameObject.CompareTag("Player"))
         {
-            doorAnim1.SetTrigger("close");
-            doorAnim2.SetTrigger("close");
             bc.enabled = false;
             bossRB.simulated = true;
+            CloseDoors();
         }
-
     }
 
-    
+    private void CloseDoors()
+    {
+        if (!doorsClosed) // Проверяем, закрыты ли уже двери
+        {
+            UpdateDoors("close");
+            doorsClosed = true;
+        }
+    }
+
     public void OpenDoors()
     {
-        doorAnim1.SetTrigger("open");
-        doorAnim2.SetTrigger("open");
+        if (doorsClosed) // Проверяем, открыты ли уже двери
+        {
+            UpdateDoors("open");
+            doorsClosed = false;
+        }
+    }
+
+    public void UpdateDoors(string command)
+    {
+        foreach (Animator anim in doorAnimators)
+        {
+            anim.SetTrigger(command);
+        }
     }
 }

@@ -4,21 +4,20 @@ using UnityEngine;
 
 public class DashBoss : MonoBehaviour
 {
-    public float flySpeed = 5f;          // Скорость полета за игроком
-    public float dashSpeed = 20f;       // Скорость движения при дэше
-    public float dashDistance = 10f;    // Расстояние дэша
-    public float dashCooldown = 5f;     // Время между дэшами
-    public float collisionPause = 0.9f;   // Время остановки после столкновения
-    public float deathMoveSpeed = 2f;   // Скорость движения в точку после смерти
-    public int maxHealth = 3;           // Максимальное количество здоровья
-    public Transform groundPoint;       // Точка для приземления босса
+    [SerializeField] private float flySpeed = 5f;          // Скорость полета за игроком
+    [SerializeField] private float dashSpeed = 20f;       // Скорость движения при дэше
+    [SerializeField] private float dashDistance = 10f;    // Расстояние дэша
+    [SerializeField] private float dashCooldown = 5f;     // Время между дэшами
+    [SerializeField] private float collisionPause = 0.9f;   // Время остановки после столкновения
+    [SerializeField] private int health = 3;
+    [SerializeField] private float deathMoveSpeed = 2f;   // Скорость движения в точку после смерти
+    [SerializeField] private Transform groundPoint;       // Точка для приземления босса
 
     private enum BossState { Flying, Dashing, Stunned, Paused, Dying }
     private BossState currentState;
 
     private Transform player;
     private Vector2 dashTarget;
-    private int currentHealth;
     private float dashTimer = 5f;
     private float pauseTimer;
 
@@ -28,7 +27,6 @@ public class DashBoss : MonoBehaviour
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform; // Предполагается, что у игрока тег "Player"
-        currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
         currentState = BossState.Flying;
         anim = GetComponent<Animator>();
@@ -136,7 +134,7 @@ public class DashBoss : MonoBehaviour
         pauseTimer -= Time.deltaTime;
         if (pauseTimer <= 0)
         {
-            if (currentHealth <= 0)
+            if (health <= 0)
             {
                 currentState = BossState.Dying;
             }
@@ -173,8 +171,8 @@ public class DashBoss : MonoBehaviour
 
     private void TakeDamage(int damage)
     {
-        currentHealth -= damage;
-        print(currentHealth);
+        health -= damage;
+        print(health);
 
         anim.SetTrigger("getHit");
         anim.SetBool("isDashing", false);
@@ -201,7 +199,7 @@ public class DashBoss : MonoBehaviour
             anim.SetTrigger("isDie");
             currentState = BossState.Stunned;
             rb.velocity = Vector2.zero;
-            rb.isKinematic = true; // Отключаем физику
+            rb.simulated = false; // Отключаем физику
         }
     }
 }

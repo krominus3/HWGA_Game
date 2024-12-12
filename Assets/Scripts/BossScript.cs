@@ -54,7 +54,7 @@ public class BossMovement : MonoBehaviour
 
         if (health <= 0)
         {
-            Boss_room.Instance.OpenDoors();
+            //Boss_room.Instance.OpenDoors();
             Game_manager.Instance.coinsCount += 5;
             TimeManager.Instance.AddTime(20);
             isDeath = true;
