@@ -24296,7 +24296,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1811003730
 RectTransform:
   m_ObjectHideFlags: 0
@@ -26170,6 +26170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinsCount: 0
+  coinMultiplier: 1
 --- !u!4 &2106895052
 Transform:
   m_ObjectHideFlags: 0
@@ -26499,6 +26500,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinsCount: 0
+  coinMultiplier: 1
 --- !u!23 &2140110895
 MeshRenderer:
   m_ObjectHideFlags: 0

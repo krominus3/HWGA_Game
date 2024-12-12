@@ -5,7 +5,15 @@ using UnityEngine;
 public class Game_manager : MonoBehaviour
 {
     [SerializeField] public int coinsCount = 0;
+    [SerializeField] public int coinMultiplier = 1;
     private static Game_manager instance;
+
+    void Start()
+    {
+        LoadCoins();
+        LoadCoinMultiplier();
+        LoadHealthData(Hero.Instance);
+    }
 
     private void Awake()
     {
@@ -39,6 +47,23 @@ public class Game_manager : MonoBehaviour
         return coinsCount;
     }
 
+    public void SaveUpgrades(UpgradeShopManager.Upgrade[] upgrades)
+    {
+        foreach (var upgrade in upgrades)
+        {
+            PlayerPrefs.SetInt($"Upgrade_{upgrade.name}_Level", upgrade.level);
+        }
+        PlayerPrefs.Save();
+    }
+
+    public void LoadUpgrades(UpgradeShopManager.Upgrade[] upgrades)
+    {
+        foreach (var upgrade in upgrades)
+        {
+            upgrade.level = PlayerPrefs.GetInt($"Upgrade_{upgrade.name}_Level", 0);
+        }
+    }
+
     public void SaveHealthData(Hero hero)
     {
         PlayerPrefs.SetInt("Hero_Health", hero.healthPoints);
@@ -65,4 +90,16 @@ public class Game_manager : MonoBehaviour
     {
         coinsCount = PlayerPrefs.GetInt("CoinsCount", coinsCount);
     }
+
+    public void SaveCoinMultiplier()
+    {
+        PlayerPrefs.SetInt("CoinMultiplier", coinMultiplier);
+        PlayerPrefs.Save();
+    }
+
+    public void LoadCoinMultiplier()
+    {
+        coinMultiplier = PlayerPrefs.GetInt("CoinMultiplier", 1); // По умолчанию 1
+    }
+
 }

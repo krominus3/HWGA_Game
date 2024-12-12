@@ -36,9 +36,10 @@ public class UpgradeShopManager : MonoBehaviour
             return;
         }
 
-
+        gameManager.LoadUpgrades(upgrades); // Загрузка апгрейдов
+        gameManager.LoadCoins();           // Загрузка монет
+        gameManager.LoadCoinMultiplier();  // Загрузка множителя монет
         UpdateUI();
-
         InitializeUpgrades();
 
         foreach (var upgrade in upgrades)
@@ -49,6 +50,7 @@ public class UpgradeShopManager : MonoBehaviour
 
         continueButton.onClick.AddListener(CloseShop);
     }
+
 
     void InitializeUpgrades()
     {
@@ -64,6 +66,9 @@ public class UpgradeShopManager : MonoBehaviour
                     break;
                 case "Health":
                     upgrade.level = Mathf.Max(0, hero.healthPoints - 3); // 3 - начальное количество здоровья
+                    break;
+                case "CoinMultiplier":
+                    upgrade.level = Mathf.Max(0, gameManager.coinMultiplier - 1); // 1 - базовый множитель
                     break;
                 default:
                     Debug.LogWarning($"Неизвестное улучшение: {upgrade.name}");
@@ -124,6 +129,11 @@ public class UpgradeShopManager : MonoBehaviour
                 break;
             case "Health":
                 hero.healthPoints++;
+                break;
+            case "CoinMultiplier":
+                gameManager.coinMultiplier++;
+                gameManager.SaveCoinMultiplier(); // Сохранение множителя
+
                 break;
 
         }
