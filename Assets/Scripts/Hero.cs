@@ -6,8 +6,10 @@ using UnityEngine.UIElements;
 public class Hero : MonoBehaviour
 {
     [SerializeField] public float speed = 6f;
-    [SerializeField] public int healthPoints = 3;
+    [SerializeField] public int maxHealth = 6; // Начальное максимальное здоровье
+    [SerializeField] public int healthPoints = 3; // Текущее здоровье
     [SerializeField] public float jumpForce = 15f;
+    [SerializeField] public int coinMultiplierLevel = 1; // Начальный уровень множителя монет
 
     [SerializeField] private float knockBackForceX = 10f;
     [SerializeField] private float knockBackForceY = 10f;
@@ -113,6 +115,13 @@ public class Hero : MonoBehaviour
 
     }
 
+    public void IncreaseMaxHealth()
+    {
+        maxHealth++;
+        healthPoints = maxHealth; // Увеличиваем текущее здоровье до нового максимума
+        HealthBar.Instance?.UpdateMaxHealth(maxHealth); // Обновляем интерфейс здоровья
+    }
+
     public void GetDamage(int DamageCount, Transform damagePosition)
     {
         healthPoints -= DamageCount;
@@ -128,6 +137,11 @@ public class Hero : MonoBehaviour
         {
             isDead = true;
         }
+    }
+
+    public void ResetHealth()
+    {
+        healthPoints = healthPoints; // Установите здоровье в максимум
     }
 
     private IEnumerator Knockback(Transform damagePosition)

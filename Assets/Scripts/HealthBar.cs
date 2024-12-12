@@ -1,13 +1,27 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class HealthBar : MonoBehaviour
 {
+    public static HealthBar Instance { get; private set; } // Синглтон
+
     public GameObject heartPrefab; // Префаб сердечка
     public int maxHealth; // Максимальное количество хп
     private List<Image> hearts = new List<Image>();
 
+    private void Awake()
+    {
+        // Реализация синглтона
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -33,10 +47,24 @@ public class HealthBar : MonoBehaviour
         }
     }
 
+    public void ResetHealthBar()
+    {
+        // Удаляем все текущие сердечки
+        foreach (var heart in hearts)
+        {
+            Destroy(heart.gameObject);
+        }
+        hearts.Clear();
+
+        // Создаём новые сердечки в соответствии с maxHealth
+        InitializeHealthBar();
+    }
+
+
     private void UpdateHealthDisplay()
     {
-
         int currentHealth = Hero.Instance.healthPoints;
+
         for (int i = 0; i < hearts.Count; i++)
         {
             if (i < currentHealth)
@@ -48,19 +76,12 @@ public class HealthBar : MonoBehaviour
                 hearts[i].color = Color.gray;
             }
         }
-
-        // Добавление новых сердечек, если текущее здоровье превышает количество уже существующих
-        while (hearts.Count < currentHealth)
-        {
-            GameObject heartInstance = Instantiate(heartPrefab, transform);
-            hearts.Add(heartInstance.GetComponent<Image>());
-        }
-
-        // Удаление лишних сердечек, если текущее здоровье меньше их количества
-        while (hearts.Count > currentHealth && currentHealth != -1)
-        {
-            Destroy(hearts[hearts.Count - 1].gameObject);
-            hearts.RemoveAt(hearts.Count - 1);
-        }
     }
+
+    public void UpdateMaxHealth(int newMaxHealth)
+    {
+        maxHealth = newMaxHealth;
+        ResetHealthBar();
+    }
+
 }

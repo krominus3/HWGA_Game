@@ -39,6 +39,30 @@ public class Game_manager : MonoBehaviour
         return coinsCount;
     }
 
+    public void SaveHealthData(Hero hero)
+    {
+        PlayerPrefs.SetInt("Hero_Health", hero.healthPoints);
+        PlayerPrefs.SetInt("Hero_MaxHealth", hero.maxHealth);
+        PlayerPrefs.Save();
+    }
 
+    public void LoadHealthData(Hero hero)
+    {
+        hero.healthPoints = PlayerPrefs.GetInt("Hero_Health", hero.healthPoints);
+        hero.maxHealth = PlayerPrefs.GetInt("Hero_MaxHealth", hero.maxHealth);
 
+        // Уведомляем HealthBar обновить количество сердечек
+        HealthBar.Instance?.UpdateMaxHealth(hero.maxHealth);
+    }
+
+    public void SaveCoins()
+    {
+        PlayerPrefs.SetInt("CoinsCount", coinsCount);
+        PlayerPrefs.Save();
+    }
+
+    public void LoadCoins()
+    {
+        coinsCount = PlayerPrefs.GetInt("CoinsCount", coinsCount);
+    }
 }

@@ -65,15 +65,6 @@ public class UpgradeShopManager : MonoBehaviour
                 case "Health":
                     upgrade.level = Mathf.Max(0, hero.healthPoints - 3); // 3 - начальное количество здоровья
                     break;
-                // Возможные другие улучшения
-                //case "BulletCount":
-                //    // Если есть логика для количества патронов, например, начальный уровень 0
-                //    upgrade.level = Mathf.Max(0, hero.bullets - 10); // Пример для начальных патронов
-                //    break;
-                //case "LifeTime":
-                //    // Если есть параметр жизни героя, задать начальный уровень
-                //    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(hero.lifeTime) - 10); // Пример жизни героя
-                //    break;
                 default:
                     Debug.LogWarning($"Неизвестное улучшение: {upgrade.name}");
                     break;
@@ -92,13 +83,13 @@ public class UpgradeShopManager : MonoBehaviour
             {
                 int currentPrice = upgrade.basePrice + upgrade.priceIncrement * upgrade.level;
                 upgrade.priceText.text = currentPrice.ToString();
-                upgrade.levelText.text = $"Уровень: {upgrade.level}";
+                upgrade.levelText.text = $"Уровень: {upgrade.level}/{upgrade.maxLevel}";
                 upgrade.button.interactable = gameManager.GetCoinsCount() >= currentPrice;
             }
             else
             {
                 upgrade.priceText.text = "MAX";
-                upgrade.levelText.text = $"Уровень: {upgrade.level}";
+                upgrade.levelText.text = $"Уровень: {upgrade.level}/{upgrade.maxLevel}";
                 upgrade.button.interactable = false;
             }
         }
@@ -136,6 +127,11 @@ public class UpgradeShopManager : MonoBehaviour
                 break;
 
         }
+    }
+
+    void OnEnable()
+    {
+        UpdateUI();
     }
 
     void CloseShop()

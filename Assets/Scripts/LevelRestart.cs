@@ -7,19 +7,29 @@ public class LevelRestart : MonoBehaviour
 {
     void Update()
     {
+        // Перезапуск уровня при нажатии клавиши R
         if (Input.GetKeyDown(KeyCode.R))
-            ReastartLevel();
+        {
+            RestartLevel();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        ReastartLevel();
+        // Перезапуск уровня при столкновении с триггером
+        RestartLevel();
     }
 
-    public void ReastartLevel()
+    public void RestartLevel()
     {
+        if (Hero.Instance != null)
+        {
+            Hero.Instance.ResetHealth(); // Сброс здоровья героя
+            HealthBar.Instance?.UpdateMaxHealth(Hero.Instance.maxHealth); // Убедитесь, что отображается правильное количество сердечек
+        }
+
+        // Перезапуск уровня
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
-        TimeManager.Instance.lifeTime = 10;
     }
 
 }
