@@ -1,52 +1,73 @@
+using UnityEditor.Tilemaps;
+using UnityEditorInternal;
 using UnityEngine;
+using System.Collections;
 
 public class BossStateMachine : MonoBehaviour
 {
-    public enum BossState { Idle, Chase, Attack, JumpAttack }
-    private BossState currentState;
-
     [SerializeField] private Transform player;
     [SerializeField] private float chaseSpeed = 5f;
     [SerializeField] private float attackRange = 1.5f;
     [SerializeField] private float jumpForce = 7f;
     [SerializeField] private int damage = 1;
-    [SerializeField] private int health = 10; // Boss health
+    [SerializeField] private int health = 10;
+    [SerializeField] private float knockbackForce = 1f;
+    [SerializeField] private float stunDuration = 0.3f;
+
+    public enum BossState { Idle, Chase, Attack, JumpAttack, Stunned, Dying }
+    private BossState currentState;
 
     private Rigidbody2D rb;
     private bool isGrounded;
-
-
+    private Animator anim;
+    private bool isFacingRight = true;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
         currentState = BossState.Idle;
     }
 
     void Update()
     {
-        
+        if (!rb.simulated || currentState == BossState.Stunned || currentState == BossState.Dying) return;
 
+        States();
+        Flip();
+        print(currentState);
         switch (currentState)
         {
             case BossState.Idle:
                 HandleIdleState();
                 CheckForPlayer();
-                CheckJumpAttack();
                 break;
             case BossState.Chase:
                 HandleChaseState();
-                CheckAttackRange();
                 CheckJumpAttack();
-                break;
-            case BossState.Attack:
-                HandleAttackState();
-                CheckForChaseAfterAttack();
                 break;
             case BossState.JumpAttack:
                 HandleJumpAttackState();
                 CheckForChaseAfterJump();
                 break;
+        }
+    }
+
+    private void States()
+    {
+        anim.SetFloat("velocityY", rb.velocity.y);
+        anim.SetBool("walking", Mathf.Abs(rb.velocity.x) > 0);
+        anim.SetBool("isGrounded", isGrounded);
+    }
+
+    private void Flip()
+    {
+        if (isFacingRight && rb.velocity.x < 0f || !isFacingRight && rb.velocity.x > 0f)
+        {
+            Vector2 localScale = transform.localScale;
+            isFacingRight = !isFacingRight;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
         }
     }
 
@@ -59,12 +80,6 @@ public class BossStateMachine : MonoBehaviour
     {
         Vector2 direction = (player.position - transform.position).normalized;
         rb.velocity = new Vector2(direction.x * chaseSpeed, rb.velocity.y);
-    }
-
-    private void HandleAttackState()
-    {
-        rb.velocity = Vector2.zero;
-        Hero.Instance.GetDamage(damage, transform);
     }
 
     private void HandleJumpAttackState()
@@ -97,28 +112,6 @@ public class BossStateMachine : MonoBehaviour
         }
     }
 
-    private void CheckAttackRange()
-    {
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        if (distanceToPlayer <= attackRange && isGrounded)
-        {
-            currentState = BossState.Attack;
-        }
-        else if (distanceToPlayer > attackRange)
-        {
-            currentState = BossState.Idle;
-        }
-    }
-
-    private void CheckForChaseAfterAttack()
-    {
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        if (distanceToPlayer > attackRange)
-        {
-            currentState = BossState.Chase;
-        }
-    }
-
     private void CheckForChaseAfterJump()
     {
         if (isGrounded)
@@ -127,33 +120,71 @@ public class BossStateMachine : MonoBehaviour
         }
     }
 
-    private void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
+        if (currentState == BossState.Stunned || currentState == BossState.Dying) return;
+
         health -= damage;
-        if (health <= 0)
+        if (health > 0)
         {
-            Die();
+            StartCoroutine(HandleStun());
+        }
+        else
+        {
+            StartCoroutine(HandleDeath());
         }
     }
 
-    private void Die()
+    private IEnumerator HandleStun()
     {
+        currentState = BossState.Stunned;
+        anim.SetTrigger("getHit");
+
+        // Knockback logic
+        Vector2 knockbackDirection = (transform.position - player.position).normalized;
+        rb.velocity = new Vector2(knockbackDirection.x * knockbackForce, rb.velocity.y);
+
+        yield return new WaitForSeconds(stunDuration);
+        anim.SetTrigger("exitGetHit");
+        currentState = BossState.Idle;
+    }
+
+    private IEnumerator HandleDeath()
+    {
+        currentState = BossState.Dying;
+        rb.velocity = Vector2.zero;
         rb.simulated = false;
-        // Logic for boss death
+        anim.SetTrigger("die");
+        yield return new WaitForSeconds(5f);
         Destroy(gameObject);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Projectile"))
+        switch (collision.gameObject.tag)
         {
-            TakeDamage(1); // Assume projectile deals 1 damage
-            Destroy(collision.gameObject); // Destroy the projectile
+            case "Projectile":
+                TakeDamage(1); // Assume projectile deals 1 damage
+                Destroy(collision.gameObject); // Destroy the projectile
+                return;
+            case "Ground":
+                isGrounded = true;
+                return;
+            case "Player":
+                Hero.Instance.GetDamage(damage, rb.transform);
+                return;
+            default:
+                return;
+            
         }
 
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;
+            isGrounded = false;
         }
     }
 }

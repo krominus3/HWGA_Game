@@ -115,6 +115,7 @@ public class Hero : MonoBehaviour
 
     public void GetDamage(int DamageCount, Transform damagePosition)
     {
+        if (isDead || isInvulnerability || getHit) return;
         healthPoints -= DamageCount;
         getHit = true;
         Debug.Log(healthPoints);
