@@ -7,6 +7,12 @@ public class Game_manager : MonoBehaviour
     [SerializeField] public int coinsCount = 0;
     private static Game_manager instance;
 
+
+    public int speedUpgrade = 0;
+    public int jumpUpgrade = 0;
+    public int healthUpgrade = 0;
+    public int lifeTimeUpgrade = 0;
+
     private void Awake()
     {
         if (instance != null && instance != this)

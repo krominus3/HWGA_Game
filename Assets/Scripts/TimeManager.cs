@@ -8,7 +8,8 @@ public class TimeManager : MonoBehaviour
     [SerializeField] private Text timer;
 
     //временная мера
-    [SerializeField] public float lifeTime = 10f;
+    private const float baseLifeTime = 1f;
+    [SerializeField] public float lifeTime;
 
     private float gameTime;
     private int tempTime;
@@ -21,6 +22,11 @@ public class TimeManager : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+    }
+
+    private void Start()
+    {
+        ResetTime();
     }
 
     // Update is called once per frame
@@ -48,6 +54,11 @@ public class TimeManager : MonoBehaviour
     public void AddTime(int count)
     {
         lifeTime += count;
+    }
+
+    public void ResetTime()
+    {
+        lifeTime = baseLifeTime + Game_manager.Instance.lifeTimeUpgrade;
     }
 
 }

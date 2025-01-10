@@ -20,23 +20,11 @@ public class UpgradeShopManager : MonoBehaviour
     public Text coinText;
     public Button continueButton;
     private Game_manager gameManager;
-    private Hero hero;
 
     void Start()
     {
         gameManager = Game_manager.Instance;
-
-        if (Hero.Instance != null)
-        {
-            hero = Hero.Instance;
-        }
-        else
-        {
-            Debug.LogError("Hero instance not found!");
-            return;
-        }
-
-
+        
         UpdateUI();
 
         InitializeUpgrades();
@@ -50,6 +38,11 @@ public class UpgradeShopManager : MonoBehaviour
         continueButton.onClick.AddListener(CloseShop);
     }
 
+    private void Update()
+    {
+        UpdateUI();
+    }
+
     void InitializeUpgrades()
     {
         foreach (var upgrade in upgrades)
@@ -57,14 +50,26 @@ public class UpgradeShopManager : MonoBehaviour
             switch (upgrade.name)
             {
                 case "Speed":
-                    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(hero.speed) - 6); // 6 - минимальный базовый уровень скорости геро€
+                    upgrade.level = gameManager.speedUpgrade; // 6 - минимальный базовый уровень скорости геро€
                     break;
                 case "JumpHeight":
-                    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(hero.jumpForce) - 15); // 15 - базовый уровень прыжка геро€
+                    upgrade.level = gameManager.jumpUpgrade; // 15 - базовый уровень прыжка геро€
                     break;
                 case "Health":
-                    upgrade.level = Mathf.Max(0, hero.healthPoints - 3); // 3 - начальное количество здоровь€
+                    upgrade.level = gameManager.healthUpgrade; // 3 - начальное количество здоровь€
                     break;
+                case "LifeTime":
+                    upgrade.level = gameManager.lifeTimeUpgrade;
+                    break;
+                //case "Speed":
+                //    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(hero.speed) - 6); // 6 - минимальный базовый уровень скорости геро€
+                //    break;
+                //case "JumpHeight":
+                //    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(hero.jumpForce) - 15); // 15 - базовый уровень прыжка геро€
+                //    break;
+                //case "Health":
+                //    upgrade.level = Mathf.Max(0, hero.healthPoints - 3); // 3 - начальное количество здоровь€
+                //    break;
                 // ¬озможные другие улучшени€
                 //case "BulletCount":
                 //    // ≈сли есть логика дл€ количества патронов, например, начальный уровень 0
@@ -109,6 +114,7 @@ public class UpgradeShopManager : MonoBehaviour
         int price = upgrade.basePrice + upgrade.priceIncrement * upgrade.level;
         if (gameManager.GetCoinsCount() >= price && upgrade.level < upgrade.maxLevel)
         {
+            
             gameManager.coinsCount -= price;
             upgrade.level++;
 
@@ -126,14 +132,27 @@ public class UpgradeShopManager : MonoBehaviour
         switch (upgrade.name)
         {
             case "Speed":
-                hero.speed += 1f;
+                gameManager.speedUpgrade += 1;
                 break;
             case "JumpHeight":
-                hero.jumpForce += 1f;
+                gameManager.jumpUpgrade += 1;
                 break;
             case "Health":
-                hero.healthPoints++;
+                gameManager.healthUpgrade += 1;
                 break;
+            case "LifeTime":
+                gameManager.lifeTimeUpgrade += 1;
+                break;
+
+            //case "Speed":
+            //    hero.speed += 1f;
+            //    break;
+            //case "JumpHeight":
+            //    hero.jumpForce += 1f;
+            //    break;
+            //case "Health":
+            //    hero.healthPoints++;
+            //    break;
 
         }
     }

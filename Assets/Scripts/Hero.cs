@@ -59,6 +59,14 @@ public class Hero : MonoBehaviour
             Destroy(gameObject);
     }
 
+    private void Start()
+    {
+        Game_manager gameManager = Game_manager.Instance;
+        speed += gameManager.speedUpgrade;
+        healthPoints += gameManager.healthUpgrade;
+        jumpForce += gameManager.jumpUpgrade;
+    }
+
     void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");

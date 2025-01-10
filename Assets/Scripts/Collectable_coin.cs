@@ -35,7 +35,7 @@ public class Collectable_coin : MonoBehaviour
             rb.gravityScale = 1;
             rb.velocity = new Vector2(1, 2);
             //��������� ����
-            TimeManager.Instance.AddTime(5);
+            //TimeManager.Instance.AddTime(5);
             //� ��������� ���������� ����������� ����� ������� �������
             soundManager.PlayCoinSound();
         }

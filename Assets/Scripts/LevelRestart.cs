@@ -19,7 +19,7 @@ public class LevelRestart : MonoBehaviour
     public void ReastartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
-        TimeManager.Instance.lifeTime = 10;
+        TimeManager.Instance.ResetTime();
     }
 
 }
