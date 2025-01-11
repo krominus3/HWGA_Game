@@ -160,6 +160,10 @@ public class DashBoss : MonoBehaviour
 
                 currentState = BossState.Flying;
             }
+            else if (collision.collider.CompareTag("Projectile"))
+            {
+                Destroy(collision.gameObject);
+            }
             else
             {
                 // Получаем урон от столкновения с объектом
@@ -187,6 +191,14 @@ public class DashBoss : MonoBehaviour
     private void MoveToGroundPoint()
     {
         if (groundPoint == null) return;
+        if (transform.position.x > groundPoint.position.x)
+        {
+            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+        }
+        else
+        {
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+        }
 
         // Плавно перемещаемся в указанную точку
         Vector3 targetPosition = Vector3.MoveTowards(transform.position, groundPoint.position, deathMoveSpeed * Time.deltaTime);

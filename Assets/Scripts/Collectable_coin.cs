@@ -29,7 +29,7 @@ public class Collectable_coin : MonoBehaviour
     {
         if (collision.name == "Hero" && !pikedUp)
         {
-            game_Manager.coinsCount++;
+            game_Manager.AddCoins();
             pikedUp = true;
             anim.SetTrigger("pickUp");
             rb.gravityScale = 1;

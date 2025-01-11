@@ -12,6 +12,7 @@ public class Game_manager : MonoBehaviour
     public int jumpUpgrade = 0;
     public int healthUpgrade = 0;
     public int lifeTimeUpgrade = 0;
+    public int coinsMultiplayerUpgrade = 0;
 
     private void Awake()
     {
@@ -45,6 +46,16 @@ public class Game_manager : MonoBehaviour
         return coinsCount;
     }
 
-
+    public void AddCoins()
+    {
+        if(coinsMultiplayerUpgrade > 0)
+        {
+            coinsCount += 2;
+        }
+        else
+        {
+            coinsCount++;
+        }
+    }
 
 }

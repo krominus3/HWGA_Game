@@ -10,7 +10,7 @@ public class UpgradeShopManager : MonoBehaviour
         public int level = 0;
         public int maxLevel = 10;
         public int basePrice = 1;
-        public int priceIncrement = 1;
+        public float growthFactor = 1.5f; // Множитель роста цены
         public Button button;
         public Text levelText;
         public Text priceText;
@@ -24,7 +24,7 @@ public class UpgradeShopManager : MonoBehaviour
     void Start()
     {
         gameManager = Game_manager.Instance;
-        
+
         UpdateUI();
 
         InitializeUpgrades();
@@ -50,35 +50,20 @@ public class UpgradeShopManager : MonoBehaviour
             switch (upgrade.name)
             {
                 case "Speed":
-                    upgrade.level = gameManager.speedUpgrade; // 6 - минимальный базовый уровень скорости героя
+                    upgrade.level = gameManager.speedUpgrade;
                     break;
                 case "JumpHeight":
-                    upgrade.level = gameManager.jumpUpgrade; // 15 - базовый уровень прыжка героя
+                    upgrade.level = gameManager.jumpUpgrade;
                     break;
                 case "Health":
-                    upgrade.level = gameManager.healthUpgrade; // 3 - начальное количество здоровья
+                    upgrade.level = gameManager.healthUpgrade;
                     break;
                 case "LifeTime":
                     upgrade.level = gameManager.lifeTimeUpgrade;
                     break;
-                //case "Speed":
-                //    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(hero.speed) - 6); // 6 - минимальный базовый уровень скорости героя
-                //    break;
-                //case "JumpHeight":
-                //    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(hero.jumpForce) - 15); // 15 - базовый уровень прыжка героя
-                //    break;
-                //case "Health":
-                //    upgrade.level = Mathf.Max(0, hero.healthPoints - 3); // 3 - начальное количество здоровья
-                //    break;
-                // Возможные другие улучшения
-                //case "BulletCount":
-                //    // Если есть логика для количества патронов, например, начальный уровень 0
-                //    upgrade.level = Mathf.Max(0, hero.bullets - 10); // Пример для начальных патронов
-                //    break;
-                //case "LifeTime":
-                //    // Если есть параметр жизни героя, задать начальный уровень
-                //    upgrade.level = Mathf.Max(0, Mathf.RoundToInt(hero.lifeTime) - 10); // Пример жизни героя
-                //    break;
+                case "CoinsMultiplayer":
+                    upgrade.level = gameManager.coinsMultiplayerUpgrade;
+                    break;
                 default:
                     Debug.LogWarning($"Неизвестное улучшение: {upgrade.name}");
                     break;
@@ -95,7 +80,7 @@ public class UpgradeShopManager : MonoBehaviour
         {
             if (upgrade.level < upgrade.maxLevel)
             {
-                int currentPrice = upgrade.basePrice + upgrade.priceIncrement * upgrade.level;
+                int currentPrice = Mathf.RoundToInt(upgrade.basePrice * Mathf.Pow(upgrade.growthFactor, upgrade.level));
                 upgrade.priceText.text = currentPrice.ToString();
                 upgrade.levelText.text = $"Уровень: {upgrade.level}";
                 upgrade.button.interactable = gameManager.GetCoinsCount() >= currentPrice;
@@ -111,10 +96,9 @@ public class UpgradeShopManager : MonoBehaviour
 
     void PurchaseUpgrade(Upgrade upgrade)
     {
-        int price = upgrade.basePrice + upgrade.priceIncrement * upgrade.level;
+        int price = Mathf.RoundToInt(upgrade.basePrice * Mathf.Pow(upgrade.growthFactor, upgrade.level));
         if (gameManager.GetCoinsCount() >= price && upgrade.level < upgrade.maxLevel)
         {
-            
             gameManager.coinsCount -= price;
             upgrade.level++;
 
@@ -143,17 +127,9 @@ public class UpgradeShopManager : MonoBehaviour
             case "LifeTime":
                 gameManager.lifeTimeUpgrade += 1;
                 break;
-
-            //case "Speed":
-            //    hero.speed += 1f;
-            //    break;
-            //case "JumpHeight":
-            //    hero.jumpForce += 1f;
-            //    break;
-            //case "Health":
-            //    hero.healthPoints++;
-            //    break;
-
+            case "CoinsMultiplayer":
+                gameManager.coinsMultiplayerUpgrade += 1;
+                break;
         }
     }
 

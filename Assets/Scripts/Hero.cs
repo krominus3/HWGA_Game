@@ -19,10 +19,12 @@ public class Hero : MonoBehaviour
     [SerializeField] private float dashingCooldown = 1f;
 
     [SerializeField] private SpriteRenderer sr;
+    [SerializeField] private PhysicsMaterial2D deathMaterial;
 
     private Rigidbody2D rb;
     private Animator anim;
     private TrailRenderer tr;
+    private Collider2D сollider;
 
     private float horizontal;
     private bool isFacingRight = true;
@@ -52,6 +54,7 @@ public class Hero : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         tr = GetComponent<TrailRenderer>();
+        сollider = GetComponent<Collider2D>();
         rb.gravityScale = 3;
         if (Instance == null)
             Instance = this;
@@ -115,7 +118,10 @@ public class Hero : MonoBehaviour
         anim.SetBool("jumping", !onGround);
 
         if (healthPoints <= 0)
+        {
             anim.SetBool("dying", true);
+            сollider.sharedMaterial = deathMaterial;
+        }
         else
             anim.SetBool("dying", false);
 

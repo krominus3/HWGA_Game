@@ -7,8 +7,9 @@ public class TimeManager : MonoBehaviour
 {
     [SerializeField] private Text timer;
 
-    //временная мера
     private const float baseLifeTime = 1f;
+    //private const float baseLifeTime = -10f;
+
     [SerializeField] public float lifeTime;
 
     private float gameTime;
