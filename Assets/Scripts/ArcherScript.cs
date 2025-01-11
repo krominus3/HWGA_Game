@@ -19,6 +19,7 @@ public class ArcherAI : MonoBehaviour
     private int currentHealth;
     private Vector3 pos, velocity;
     private bool getHit = false;
+    private SoundManager soundManager;
 
     private enum ArcherState { Patrolling, Shooting, TakingDamage, Dead }
     private ArcherState currentState = ArcherState.Patrolling;
@@ -29,6 +30,7 @@ public class ArcherAI : MonoBehaviour
         animator = GetComponent<Animator>();
         currentTarget = patrolLeft; // Начинаем патрулирование с левой точки
         currentHealth = maxHealth; // Устанавливаем здоровье
+        soundManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<SoundManager>();
     }
 
     private void Update()
@@ -143,7 +145,8 @@ public class ArcherAI : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (currentState == ArcherState.Dead || currentState == ArcherState.TakingDamage) return;
-
+            
+        soundManager.PlayEnemyGetHitSound();
         currentHealth -= damage;
         animator.SetTrigger("getHit");
         getHit = true;

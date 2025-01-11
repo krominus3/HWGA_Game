@@ -12,6 +12,8 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip enemyGetHitSound;
     [SerializeField] private AudioClip preJumpSound;
     [SerializeField] private AudioClip shotSound;
+    [SerializeField] private AudioClip trapActivationSound;
+    [SerializeField] private AudioClip victorySound;
 
     private void Start()
     {
@@ -39,5 +41,11 @@ public class SoundManager : MonoBehaviour
     }
     public void PlayShotSound(){
         audioSource.PlayOneShot(shotSound);
+    }
+    public void PlayTrapActivationSound(){
+        audioSource.PlayOneShot(trapActivationSound);
+    }
+    public void PlayVictorySound(){
+        audioSource.PlayOneShot(victorySound);
     }
 }

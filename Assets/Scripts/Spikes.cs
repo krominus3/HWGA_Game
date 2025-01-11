@@ -8,7 +8,12 @@ public class Spikes : MonoBehaviour
 
     private Animator anim;
     private BoxCollider2D bc;
+    private SoundManager soundManager;
 
+    private void Start()
+    {
+        soundManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<SoundManager>();
+    }
     private void Awake()
     {
         bc = GetComponent<BoxCollider2D>();
@@ -27,6 +32,7 @@ public class Spikes : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if ((collision.gameObject == Hero.Instance.gameObject) && (!Hero.Instance.isInvulnerability))
+            soundManager.PlayTrapActivationSound();
             anim.SetTrigger("active");
     }
 

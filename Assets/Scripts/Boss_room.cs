@@ -7,12 +7,15 @@ public class Boss_room : MonoBehaviour
     [SerializeField] Rigidbody2D bossRB;
 
     private BoxCollider2D bc;
-    private bool doorsClosed = false; // Флаг для отслеживания состояния дверей
+    private bool doorsClosed = false; // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+
+    private SoundManager soundManager;
 
     void Start()
     {
         bc = GetComponent<BoxCollider2D>();
-        bossRB.simulated = false; // Обеспечивает, что Rigidbody2D босса отключен по умолчанию
+        bossRB.simulated = false; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ Rigidbody2D пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        soundManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<SoundManager>();
     }
 
     private void FixedUpdate()
@@ -39,7 +42,7 @@ public class Boss_room : MonoBehaviour
 
     private void CloseDoors()
     {
-        if (!doorsClosed) // Проверяем, закрыты ли уже двери
+        if (!doorsClosed) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         {
             UpdateDoors("close");
             doorsClosed = true;
@@ -48,8 +51,9 @@ public class Boss_room : MonoBehaviour
 
     public void OpenDoors()
     {
-        if (doorsClosed) // Проверяем, открыты ли уже двери
+        if (doorsClosed) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         {
+            soundManager.PlayVictorySound();
             UpdateDoors("open");
             doorsClosed = false;
         }

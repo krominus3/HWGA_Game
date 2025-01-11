@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class DashBoss : MonoBehaviour
 {
-    [SerializeField] private float flySpeed = 5f;          // Скорость полета за игроком
-    [SerializeField] private float dashSpeed = 20f;       // Скорость движения при дэше
-    [SerializeField] private float dashDistance = 10f;    // Расстояние дэша
-    [SerializeField] private float dashCooldown = 5f;     // Время между дэшами
-    [SerializeField] private float collisionPause = 0.9f;   // Время остановки после столкновения
+    [SerializeField] private float flySpeed = 5f;          // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    [SerializeField] private float dashSpeed = 20f;       // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+    [SerializeField] private float dashDistance = 10f;    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+    [SerializeField] private float dashCooldown = 5f;     // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+    [SerializeField] private float collisionPause = 0.9f;   // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     [SerializeField] private int health = 3;
-    [SerializeField] private float deathMoveSpeed = 2f;   // Скорость движения в точку после смерти
-    [SerializeField] private Transform groundPoint;       // Точка для приземления босса
+    [SerializeField] private float deathMoveSpeed = 2f;   // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+    [SerializeField] private Transform groundPoint;       // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
     private enum BossState { Flying, Dashing, Stunned, Paused, Dying }
     private BossState currentState;
@@ -24,18 +24,21 @@ public class DashBoss : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
 
+    private SoundManager soundManager;
+
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform; // Предполагается, что у игрока тег "Player"
+        player = GameObject.FindGameObjectWithTag("Player").transform; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ "Player"
         rb = GetComponent<Rigidbody2D>();
         currentState = BossState.Flying;
         anim = GetComponent<Animator>();
+        soundManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<SoundManager>();
     }
 
     private void Update()
     {
         if (!rb.simulated) return;
-        //Debug.Log("Текущее состояние босса: " + currentState);
+        //Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: " + currentState);
         switch (currentState)
         {
             case BossState.Flying:
@@ -64,7 +67,7 @@ public class DashBoss : MonoBehaviour
 
             case BossState.Stunned:
                 
-                // Босс стоит на месте, ничего не делает
+                // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 break;
         }
     }
@@ -73,11 +76,11 @@ public class DashBoss : MonoBehaviour
     {
         if (player == null) return;
 
-        // Лететь за игроком
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Vector2 targetPosition = player.position;
         Vector2 newPosition = Vector2.MoveTowards(transform.position, targetPosition, flySpeed * Time.deltaTime);
 
-        // Поворачиваем модель в направлении движения
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         FlipModel(targetPosition);
 
         rb.MovePosition(newPosition);
@@ -89,7 +92,7 @@ public class DashBoss : MonoBehaviour
 
         currentState = BossState.Dashing;
 
-        // Вычисляем направление к игроку и цель дэша
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         Vector2 direction = (player.position - transform.position).normalized;
         dashTarget = (Vector2)transform.position + direction * dashDistance;
 
@@ -98,15 +101,15 @@ public class DashBoss : MonoBehaviour
 
     private void Dash()
     {
-        // Двигаемся к расчетной точке с указанной скоростью
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Vector2 newPosition = Vector2.MoveTowards(transform.position, dashTarget, dashSpeed * Time.deltaTime);
 
-        // Поворачиваем модель в направлении движения
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         FlipModel(dashTarget);
 
         rb.MovePosition(newPosition);
 
-        // Если достигли точки дэша, возвращаемся в состояние полета
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if ((Vector2)transform.position == dashTarget)
         {
             currentState = BossState.Flying;
@@ -115,10 +118,10 @@ public class DashBoss : MonoBehaviour
 
     private void FlipModel(Vector2 targetPosition)
     {
-        // Определяем направление движения
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         float direction = targetPosition.x - transform.position.x;
 
-        // Если движемся вправо — масштаб по X положительный, если влево — отрицательный
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ X пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (direction > 0 && transform.localScale.x < 0)
         {
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
@@ -151,10 +154,10 @@ public class DashBoss : MonoBehaviour
         {
             if (collision.collider.CompareTag("Player"))
             {
-                // Наносим урон игроку и передаем позицию столкновения
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 Hero.Instance.GetDamage(1, transform);
 
-                //// Отскакиваем назад
+                //// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
                 //Vector2 bounceDirection = (transform.position - collision.transform.position).normalized;
                 //rb.AddForce(bounceDirection * 5f, ForceMode2D.Impulse);
 
@@ -166,7 +169,7 @@ public class DashBoss : MonoBehaviour
             }
             else
             {
-                // Получаем урон от столкновения с объектом
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 TakeDamage(1);
 
             }
@@ -175,12 +178,13 @@ public class DashBoss : MonoBehaviour
 
     private void TakeDamage(int damage)
     {
+        soundManager.PlayEnemyGetHitSound();
         health -= damage;
         print(health);
 
         anim.SetTrigger("getHit");
         anim.SetBool("isDashing", false);
-        // Переходим в состояние паузы
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
         currentState = BossState.Paused;
         pauseTimer = collisionPause;
@@ -200,18 +204,18 @@ public class DashBoss : MonoBehaviour
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
 
-        // Плавно перемещаемся в указанную точку
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         Vector3 targetPosition = Vector3.MoveTowards(transform.position, groundPoint.position, deathMoveSpeed * Time.deltaTime);
         rb.MovePosition(targetPosition);
 
-        // Останавливаемся, когда достигли точки
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (Vector3.Distance(transform.position, groundPoint.position) < 0.1f)
         {
             
             anim.SetTrigger("isDie");
             currentState = BossState.Stunned;
             rb.velocity = Vector2.zero;
-            rb.simulated = false; // Отключаем физику
+            rb.simulated = false; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         }
     }
 }

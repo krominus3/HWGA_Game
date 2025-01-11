@@ -20,11 +20,14 @@ public class BossStateMachine : MonoBehaviour
     private Animator anim;
     private bool isFacingRight = true;
 
+    private SoundManager soundManager;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         currentState = BossState.Idle;
+        soundManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<SoundManager>();
     }
 
     void Update()
@@ -122,6 +125,7 @@ public class BossStateMachine : MonoBehaviour
     {
         if (currentState == BossState.Stunned || currentState == BossState.Dying) return;
 
+        soundManager.PlayEnemyGetHitSound();
         health -= damage;
         if (health > 0)
         {
