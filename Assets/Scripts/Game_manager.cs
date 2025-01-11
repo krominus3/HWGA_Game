@@ -14,6 +14,11 @@ public class Game_manager : MonoBehaviour
     public int lifeTimeUpgrade = 0;
     public int coinsMultiplayerUpgrade = 0;
 
+    public int dashUpgrade = 0;
+    public int EndGameItem = 0;
+
+    
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -44,6 +49,19 @@ public class Game_manager : MonoBehaviour
     public int GetCoinsCount()
     {
         return coinsCount;
+    }
+
+    public void AddKillCoins(int count)
+    {
+        if (coinsMultiplayerUpgrade > 0)
+        {
+            coinsCount += count * 2;
+        }
+        else
+        {
+            coinsCount += count;
+        }
+        
     }
 
     public void AddCoins()

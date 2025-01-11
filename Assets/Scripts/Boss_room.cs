@@ -20,6 +20,7 @@ public class Boss_room : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!bossRB) return; 
         if (bossRB.simulated)
         {
             CloseDoors();

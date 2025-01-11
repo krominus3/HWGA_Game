@@ -68,6 +68,7 @@ public class Hero : MonoBehaviour
         speed += gameManager.speedUpgrade;
         healthPoints += gameManager.healthUpgrade;
         jumpForce += gameManager.jumpUpgrade;
+        canDash = gameManager.dashUpgrade == 1 ? true : false;
     }
 
     void Update()

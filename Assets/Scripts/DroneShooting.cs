@@ -44,7 +44,7 @@ public class DroneShooting : MonoBehaviour
 
         if (nearestEnemy != null)
         {
-            direction = (nearestEnemy.transform.position - transform.position).normalized;
+            direction = (nearestEnemy.transform.position + new Vector3(0, 0.4f) - transform.position).normalized;
         }
 
         // ������������ ���� � ����������� ��������

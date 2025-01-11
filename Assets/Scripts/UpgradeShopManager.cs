@@ -23,6 +23,9 @@ public class UpgradeShopManager : MonoBehaviour
 
     void Start()
     {
+        gameObject.SetActive(true);
+        Time.timeScale = 0f;
+
         gameManager = Game_manager.Instance;
 
         UpdateUI();
@@ -63,6 +66,12 @@ public class UpgradeShopManager : MonoBehaviour
                     break;
                 case "CoinsMultiplayer":
                     upgrade.level = gameManager.coinsMultiplayerUpgrade;
+                    break;
+                case "Dash":
+                    upgrade.level = gameManager.dashUpgrade;
+                    break;
+                case "EndGameItem":
+                    upgrade.level = gameManager.EndGameItem;
                     break;
                 default:
                     Debug.LogWarning($"Неизвестное улучшение: {upgrade.name}");
@@ -128,7 +137,13 @@ public class UpgradeShopManager : MonoBehaviour
                 gameManager.lifeTimeUpgrade += 1;
                 break;
             case "CoinsMultiplayer":
-                gameManager.coinsMultiplayerUpgrade += 1;
+                gameManager.coinsMultiplayerUpgrade++;
+                break;
+            case "Dash":
+                gameManager.dashUpgrade++;
+                break;
+            case "EndGameItem":
+                gameManager.EndGameItem++;
                 break;
         }
     }

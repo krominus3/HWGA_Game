@@ -9,6 +9,8 @@ public class CoinsUI : MonoBehaviour
 
     private void Start()
     {
+        coinManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<Game_manager>();
+
         if (coinManager != null)
         {
             UpdateCoinsUI();

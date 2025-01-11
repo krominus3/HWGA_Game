@@ -31,7 +31,14 @@ public class RotatingProjectile : Projectile
             damageable.GetDamage(1, transform); // ”казываем 10 урона как пример
         }
 
+        if (((1 << collision.gameObject.layer) & groundLayer) != 0)
+        {
+            Destroy(gameObject);
+        }
+
         // ”ничтожаем снар€д после нанесени€ урона
         Destroy(gameObject);
     }
+
+    
 }
