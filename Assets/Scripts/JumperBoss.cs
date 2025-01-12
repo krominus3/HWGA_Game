@@ -157,6 +157,7 @@ public class BossStateMachine : MonoBehaviour
         rb.velocity = Vector2.zero;
         rb.simulated = false;
         anim.SetTrigger("die");
+        Game_manager.Instance.AddKillCoins(10);
         yield return new WaitForSeconds(5f);
         Destroy(gameObject);
     }

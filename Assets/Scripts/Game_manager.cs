@@ -8,14 +8,14 @@ public class Game_manager : MonoBehaviour
     private static Game_manager instance;
 
 
-    public int speedUpgrade = 0;
-    public int jumpUpgrade = 0;
-    public int healthUpgrade = 0;
-    public int lifeTimeUpgrade = 0;
-    public int coinsMultiplayerUpgrade = 0;
+    public int speedUpgrade;
+    public int jumpUpgrade;
+    public int healthUpgrade;
+    public int lifeTimeUpgrade;
+    public int coinsMultiplierUpgrade;
 
-    public int dashUpgrade = 0;
-    public int EndGameItem = 0;
+    public int dashUpgrade;
+    public int EndGameItem;
 
     
 
@@ -53,27 +53,12 @@ public class Game_manager : MonoBehaviour
 
     public void AddKillCoins(int count)
     {
-        if (coinsMultiplayerUpgrade > 0)
-        {
-            coinsCount += count * 2;
-        }
-        else
-        {
-            coinsCount += count;
-        }
-        
+        coinsCount += count * coinsMultiplierUpgrade;
     }
 
     public void AddCoins()
     {
-        if(coinsMultiplayerUpgrade > 0)
-        {
-            coinsCount += 2;
-        }
-        else
-        {
-            coinsCount++;
-        }
+        coinsCount += coinsMultiplierUpgrade;
     }
 
 }

@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 public class Hero : MonoBehaviour
 {
-    [SerializeField] public float speed = 6f;
+    [SerializeField] public float speed = 0f;
     [SerializeField] public int healthPoints = 3;
     [SerializeField] public float jumpForce = 15f;
 
@@ -65,9 +65,9 @@ public class Hero : MonoBehaviour
     private void Start()
     {
         Game_manager gameManager = Game_manager.Instance;
-        speed += gameManager.speedUpgrade;
-        healthPoints += gameManager.healthUpgrade;
-        jumpForce += gameManager.jumpUpgrade;
+        speed = gameManager.speedUpgrade * 1.5f;
+        healthPoints = gameManager.healthUpgrade;
+        jumpForce = gameManager.jumpUpgrade * 2;
         canDash = gameManager.dashUpgrade == 1 ? true : false;
     }
 

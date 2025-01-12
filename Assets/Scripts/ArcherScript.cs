@@ -173,6 +173,7 @@ public class ArcherAI : MonoBehaviour
 
     private IEnumerator Die()
     {
+        Game_manager.Instance.AddKillCoins(10);
         animator.SetTrigger("die");
         yield return new WaitForSeconds(1f);
         Destroy(gameObject);

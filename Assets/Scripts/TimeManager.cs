@@ -7,8 +7,8 @@ public class TimeManager : MonoBehaviour
 {
     [SerializeField] private Text timer;
 
-    //private const float baseLifeTime = 1f;
-    private const float baseLifeTime = -10f;
+    private const float baseLifeTime = 0f;
+    //private const float baseLifeTime = -10f;
 
     [SerializeField] public float lifeTime;
 
@@ -59,7 +59,7 @@ public class TimeManager : MonoBehaviour
 
     public void ResetTime()
     {
-        lifeTime = baseLifeTime + Game_manager.Instance.lifeTimeUpgrade;
+        lifeTime = baseLifeTime + Game_manager.Instance.lifeTimeUpgrade * 7;
     }
 
 }

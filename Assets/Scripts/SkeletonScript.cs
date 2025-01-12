@@ -226,6 +226,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     private IEnumerator Die()
     {
+        Game_manager.Instance.AddKillCoins(10);
         yield return new WaitForSeconds(1f);
         Destroy(gameObject);
     }

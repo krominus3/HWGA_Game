@@ -216,6 +216,7 @@ public class DashBoss : MonoBehaviour
             currentState = BossState.Stunned;
             rb.velocity = Vector2.zero;
             rb.simulated = false; // ��������� ������
+            Game_manager.Instance.AddKillCoins(100);
         }
     }
 }

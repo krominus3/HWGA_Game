@@ -10,7 +10,9 @@ public class UpgradeShopManager : MonoBehaviour
         public int level = 0;
         public int maxLevel = 10;
         public int basePrice = 1;
-        public float growthFactor = 1.5f; // Множитель роста цены
+        public int extend = 1;
+        public int multiplier = 1;
+        //public float growthFactor = 1.5f;
         public Button button;
         public Text levelText;
         public Text priceText;
@@ -64,8 +66,8 @@ public class UpgradeShopManager : MonoBehaviour
                 case "LifeTime":
                     upgrade.level = gameManager.lifeTimeUpgrade;
                     break;
-                case "CoinsMultiplayer":
-                    upgrade.level = gameManager.coinsMultiplayerUpgrade;
+                case "CoinsMultiplier":
+                    upgrade.level = gameManager.coinsMultiplierUpgrade;
                     break;
                 case "Dash":
                     upgrade.level = gameManager.dashUpgrade;
@@ -82,6 +84,18 @@ public class UpgradeShopManager : MonoBehaviour
         }
     }
 
+    private int UpgradePrice(Upgrade upgrade)
+    {
+        if (upgrade.level == 0)
+            return upgrade.basePrice;
+
+
+        return (int)Mathf.Pow(upgrade.level, upgrade.extend) * upgrade.multiplier;
+
+        
+        
+    }
+
     void UpdateUI()
     {
         coinText.text = gameManager.GetCoinsCount().ToString();
@@ -89,8 +103,11 @@ public class UpgradeShopManager : MonoBehaviour
         {
             if (upgrade.level < upgrade.maxLevel)
             {
-                int currentPrice = Mathf.RoundToInt(upgrade.basePrice * Mathf.Pow(upgrade.growthFactor, upgrade.level));
-                upgrade.priceText.text = currentPrice.ToString();
+                //int currentPrice = Mathf.RoundToInt(upgrade.basePrice * Mathf.Pow(upgrade.growthFactor, upgrade.level));
+                int currentPrice = UpgradePrice(upgrade);
+                
+
+                upgrade.priceText.text = $"Цена: {currentPrice}";
                 upgrade.levelText.text = $"Уровень: {upgrade.level}";
                 upgrade.button.interactable = gameManager.GetCoinsCount() >= currentPrice;
             }
@@ -105,7 +122,7 @@ public class UpgradeShopManager : MonoBehaviour
 
     void PurchaseUpgrade(Upgrade upgrade)
     {
-        int price = Mathf.RoundToInt(upgrade.basePrice * Mathf.Pow(upgrade.growthFactor, upgrade.level));
+        int price = UpgradePrice(upgrade);
         if (gameManager.GetCoinsCount() >= price && upgrade.level < upgrade.maxLevel)
         {
             gameManager.coinsCount -= price;
@@ -136,8 +153,8 @@ public class UpgradeShopManager : MonoBehaviour
             case "LifeTime":
                 gameManager.lifeTimeUpgrade += 1;
                 break;
-            case "CoinsMultiplayer":
-                gameManager.coinsMultiplayerUpgrade++;
+            case "CoinsMultiplier":
+                gameManager.coinsMultiplierUpgrade++;
                 break;
             case "Dash":
                 gameManager.dashUpgrade++;
